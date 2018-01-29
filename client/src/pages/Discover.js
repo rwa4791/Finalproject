@@ -51,18 +51,17 @@ class Discover extends Component {
 
   render() {
     return (
-      <div>
-        <h1 className="text-center">Make New Friends</h1>
+       <div>
+        <h1 className="text-center">Pricing Structure</h1>
         <h3 className="text-center">
-          Thumbs up on any pups you'd like to meet!
+          See our different pricing tiers.
         </h3>
-        <Card image={this.state.image} handleBtnClick={this.handleBtnClick} />
+        <Card image= "https://help.citibikenyc.com/hc/article_attachments/115012622367/mceclip0.png">
+        </Card>
         <h1 className="text-center">
-          Made friends with {this.state.matchCount} pups so far!
+          Any questions please email ABC
         </h1>
-        <Alert style={{ opacity: this.state.match ? 1 : 0 }} type="success">
-          Yay! That Pup Liked You Too!!!
-        </Alert>
+        
       </div>
     );
   }

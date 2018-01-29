@@ -16,22 +16,25 @@ const usersSeed = [
     firstName: "Hector",
     lastName:  "Candelaria",
     userName:  "hcandelaria",
-    email:     "hcandelaria66.7@gmail.com",
+    email:     "hcandelaria66.7@icloud.com",
     password:  "password",
+    item_list: []
   },
   {
     firstName: "Hector",
     lastName:  "Candelaria",
-    userName:  "hcandelaria",
+    userName:  "hcandelaria66.7",
     email:     "hcandelaria66.7@gmail.com",
     password:  "password",
+    item_list: []
   },
   {
     firstName: "Hector",
     lastName:  "Candelaria",
-    userName:  "hcandelaria",
-    email:     "hcandelaria66.7@gmail.com",
+    userName:  "hectorc",
+    email:     "hcandelaria66.7@ymail.com",
     password:  "password",
+    item_list: []
   },
   {
     firstName: "Will",
@@ -39,6 +42,7 @@ const usersSeed = [
     userName:  "wsmith",
     email:     "wsmith@gmail.com",
     password:  "password",
+    item_list: []
   },
   {
     firstName: "Jennifer",
@@ -46,6 +50,7 @@ const usersSeed = [
     userName:  "jespinal",
     email:     "jespinal@gmail.com",
     password:  "password",
+    item_list: []
   },
 ];
 db.User

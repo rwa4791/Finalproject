@@ -17,7 +17,17 @@ module.exports = {
   create: function(req, res) {
     db.Item
       .create(req.body)
-      .then(dbModel => res.json(dbModel))
+      .then(dbItem => {
+        return db.User
+          .findByIdAndUpdate(
+            req.params.id ,
+            { $push: { item_list: dbItem }},
+            { new : true }
+          )
+      })
+      .then(dbModel => {
+        res.json(dbModel);
+      })
       .catch(err => res.status(422).json(err));
   },
   update: function(req, res) {

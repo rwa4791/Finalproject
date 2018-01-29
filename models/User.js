@@ -7,7 +7,9 @@ const userSchema = new Schema({
   //_id:
   firstName: {  type: String , required: true   },
   lastName:  {  type: String , required: true   },
-  userName:  {  type: String , required: true   },
+  userName:  {  type: String , required: true,
+                unique: true
+             },
   email:     {  type: String , required: true   },
   password:  {  type: String , required: true   },
   item_list: [{ type: Schema.Types.ObjectId }]

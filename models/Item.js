@@ -17,7 +17,7 @@ const itemSchema = new Schema({
   description:  { type: String    , required: false   },
   quantity:     { type: String    , required: true    },
   price:        { type: Number    , required: false   },
-  //itemsSold:  [ {type: items} ],
+  itemsSold:  [ {type: Schema.Types.Mixed} ],
   user_id:      { type: Schema.Types.ObjectId,
                   required: true
                 },

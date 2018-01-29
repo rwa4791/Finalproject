@@ -5,15 +5,15 @@ import Row from "../components/Row";
 import Col from "../components/Col";
 
 const About = () =>
-  <div>
-    <Hero backgroundImage="https://i.imgur.com/qkdpN.jpg">
-      <h1>Pupster</h1>
-      <h2>They're the Good Boys and Girls</h2>
+<div>
+    <Hero backgroundImage="https://i.ytimg.com/vi/fZF3xDld69s/maxresdefault.jpg">
+      <h1>Sales Tracker</h1>
+      <h2>Keep Track of Your Business</h2>
     </Hero>
     <Container style={{ marginTop: 30 }}>
       <Row>
         <Col size="md-12">
-          <h1>Welcome To Pupster!</h1>
+          <h1>Welcome To Sales Tracker!</h1>
         </Col>
       </Row>
       <Row>

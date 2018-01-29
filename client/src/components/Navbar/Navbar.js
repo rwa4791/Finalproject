@@ -25,10 +25,10 @@ const Navbar = props =>
         <li
           className={window.location.pathname === "/discover" ? "active" : ""}
         >
-          <Link to="/discover">Discover</Link>
+          <Link to="/discover">Pricing</Link>
         </li>
         <li className={window.location.pathname === "/search" ? "active" : ""}>
-          <Link to="/search">Search</Link>
+          <Link to="/search">Login/Signup</Link>
         </li>
       </ul>
     </div>

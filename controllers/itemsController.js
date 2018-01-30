@@ -9,13 +9,16 @@ userUpdateNewItem = (dbItem, id) => {
       { new : true}
     )
 }
-itemUpdateSoldItem = (soldItem, id) =>{
+itemUpdateSoldItem = (soldItem, id) => {
   return db.Item
     .findByIdAndUpdate(
       id,
       { $push: { itemsSold: soldItem}},
       { new : true}
     )
+}
+updateQuantity = (req, res) => {
+  
 }
 // Defining methods for the ItemsController
 module.exports = {
@@ -49,7 +52,8 @@ module.exports = {
   sellItem: function(req,res){
     db.Item
       .itemUpdateSoldItem(req.body, req.params.id,)
-      .then(dbModel => res.json(dbModel))
+      .then(dbItem => res.json(dbItem))
+      .then(updateQuantity())
       .catch(err => res.status(422).json(err));
   },
   remove: function(req, res) {

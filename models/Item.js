@@ -3,24 +3,33 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const items = {
-  price: { type : Number, require: true,
-           default: 0
-         },
-  date:  { type : Date,
-          default: Date.now
-         }
+  quantity: { type: Number , required: true,
+              default: 1                        },
+  price:    { type : Number, required: true,
+              default: 0                        },
+  date:     { type : Date  , required: true,
+              default: Date.now                 }
 };
 //Creating schema
 const itemSchema = new Schema({
   //_id:
-  name:         { type: String    , required: true    },
-  description:  { type: String    , required: false   },
-  quantity:     { type: String    , required: true    },
-  price:        { type: Number    , required: false   },
-  itemsSold:  [ {type: Schema.Types.Mixed} ],
+  name:         { type: String    , required: true,
+                  trim: true                          },
+
+  description:  { type: String    , required: true,
+                  trim: true                          },
+
+  quantity:     { type: Number    , required: true    },
+
+  price:        { type: Number    , required: false,
+                  default: 0                          },
+
+  itemsSold:  [ {type: Schema.Types.Mixed             } ],
+
   user_id:      { type: Schema.Types.ObjectId,
                   required: true
                 },
+
   date:         { type: Date      , default: Date.now,
                   required: true
                 }

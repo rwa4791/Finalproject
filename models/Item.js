@@ -3,12 +3,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const items = {
-  quantity: { type: Number , required: true,
-              default: 1                        },
-  price:    { type : Number, required: true,
-              default: 0                        },
-  date:     { type : Date  , required: true,
-              default: Date.now                 }
+  quantity:     { type: Number , required: true,
+                  default: 1                        },
+  price:        { type : Number, required: true,
+                  default: 0                        },
+  date:         { type : Date  , required: true,
+                  default: Date.now                 },
+  paymentType:  { type : String  , required: true,  }
 };
 //Creating schema
 const itemSchema = new Schema({
@@ -16,12 +17,12 @@ const itemSchema = new Schema({
   name:         { type: String    , required: true,
                   trim: true                          },
 
-  description:  { type: String    , required: true,
+  description:  { type: String    , required: false,
                   trim: true                          },
 
   quantity:     { type: Number    , required: true    },
 
-  price:        { type: Number    , required: false,
+  price:        { type: Number    , required: true,
                   default: 0                          },
 
   itemsSold:  [ {type: Schema.Types.Mixed             } ],

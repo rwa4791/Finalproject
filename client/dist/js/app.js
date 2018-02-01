@@ -129,8 +129,8 @@
 	      _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _HomePage2.default }),
-	        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/signup', component: _HomePage2.default })
+	        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _LoginPage2.default }),
+	        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/signup', component: _SignUpPage2.default })
 	      )
 	    )
 	  )
@@ -41109,6 +41109,13 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var backgroundImg = 'https://i.ytimg.com/vi/fZF3xDld69s/maxresdefault.jpg';
+
+	var divStyle = {
+	  backgroundSize: 'cover',
+	  backgroundImage: 'url(' + backgroundImg + ')'
+	};
+
 	var LoginPage = function (_React$Component) {
 	  _inherits(LoginPage, _React$Component);
 
@@ -41222,13 +41229,18 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(_LoginForm2.default, {
-	        onSubmit: this.processForm,
-	        onChange: this.changeUser,
-	        errors: this.state.errors,
-	        successMessage: this.state.successMessage,
-	        user: this.state.user
-	      });
+
+	      return _react2.default.createElement(
+	        'div',
+	        { style: divStyle },
+	        _react2.default.createElement(_LoginForm2.default, {
+	          onSubmit: this.processForm,
+	          onChange: this.changeUser,
+	          errors: this.state.errors,
+	          successMessage: this.state.successMessage,
+	          user: this.state.user
+	        })
+	      );
 	    }
 	  }]);
 
@@ -41255,7 +41267,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(340);
+	var _reactRouterDom = __webpack_require__(620);
 
 	var _Card = __webpack_require__(400);
 
@@ -41329,7 +41341,7 @@
 	        null,
 	        'Don\'t have an account? ',
 	        _react2.default.createElement(
-	          _reactRouter.Link,
+	          _reactRouterDom.Link,
 	          { to: '/signup' },
 	          'Create one'
 	        ),
@@ -43505,7 +43517,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(340);
+	var _reactRouterDom = __webpack_require__(620);
 
 	var _Card = __webpack_require__(400);
 
@@ -43584,7 +43596,7 @@
 	        null,
 	        'Already have an account? ',
 	        _react2.default.createElement(
-	          _reactRouter.Link,
+	          _reactRouterDom.Link,
 	          { to: '/login' },
 	          'Log in'
 	        )
@@ -71764,21 +71776,13 @@
 
 	var _Card = __webpack_require__(400);
 
-	var _LoginForm = __webpack_require__(458);
-
-	var _LoginForm2 = _interopRequireDefault(_LoginForm);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var HomePage = function HomePage() {
 	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    _react2.default.createElement(
-	      _Card.Card,
-	      { className: 'container' },
-	      _react2.default.createElement(_Card.CardTitle, { title: 'React Application', subtitle: 'This is the home page.' })
-	    )
+	    _Card.Card,
+	    { className: 'container' },
+	    _react2.default.createElement(_Card.CardTitle, { title: 'React Application', subtitle: 'This is the home page.' })
 	  );
 	};
 

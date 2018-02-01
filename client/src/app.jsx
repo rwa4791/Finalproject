@@ -37,8 +37,8 @@ ReactDom.render((
           }>
         </AppBar>
         <div>
-          <Route exact path="/" component={HomePage}/>
-          <Route exact path="/signup" component={HomePage}/>
+          <Route exact path="/" component={LoginPage}/>
+          <Route exact path="/signup" component={SignUpPage}/>
         </div>
       </div>
     </MuiThemeProvider>

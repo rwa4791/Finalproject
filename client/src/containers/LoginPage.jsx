@@ -1,9 +1,15 @@
 import React, { PropTypes } from 'react';
 import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm.jsx';
+const backgroundImg = 'https://i.ytimg.com/vi/fZF3xDld69s/maxresdefault.jpg';
 
+const divStyle ={
+  backgroundSize: 'cover',
+  backgroundImage: `url(${backgroundImg})`
+};
 
 class LoginPage extends React.Component {
+
 
   /**
    * Class constructor.
@@ -101,14 +107,17 @@ class LoginPage extends React.Component {
    * Render the component.
    */
   render() {
+
     return (
-      <LoginForm
-        onSubmit={this.processForm}
-        onChange={this.changeUser}
-        errors={this.state.errors}
-        successMessage={this.state.successMessage}
-        user={this.state.user}
-      />
+      <div style={ divStyle }>
+        <LoginForm
+          onSubmit={this.processForm}
+          onChange={this.changeUser}
+          errors={this.state.errors}
+          successMessage={this.state.successMessage}
+          user={this.state.user}
+        />
+      </div>
     );
   }
 

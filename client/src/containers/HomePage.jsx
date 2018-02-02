@@ -5,7 +5,13 @@ import { Card, CardTitle } from 'material-ui/Card';
 const HomePage = () => (
   <Card className="container">
     <CardTitle title="React Application" subtitle="This is the home page." />
-  </Card>
+   <div>
+     <row className = "form">
+     </row>
+   </div>
+ </Card>
+
+
 );
 
 export default HomePage;

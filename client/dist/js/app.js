@@ -66578,7 +66578,12 @@
 	  return _react2.default.createElement(
 	    _Card.Card,
 	    { className: 'container' },
-	    _react2.default.createElement(_Card.CardTitle, { title: 'React Application', subtitle: 'This is the home page.' })
+	    _react2.default.createElement(_Card.CardTitle, { title: 'React Application', subtitle: 'This is the home page.' }),
+	    _react2.default.createElement(
+	      'div',
+	      null,
+	      _react2.default.createElement('row', { className: 'form' })
+	    )
 	  );
 	};
 

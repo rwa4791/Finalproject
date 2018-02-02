@@ -3,13 +3,14 @@ import ReactDom from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-//import { browserHistory, Router } from 'react-router';
-import routes from './routes.js';
 import {AppBar, FlatButton, IconButton} from 'material-ui';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-router-dom'
 import LoginPage from './containers/LoginPage.jsx';
 import SignUpPage from './containers/SignUpPage.jsx';
 import HomePage from './containers/HomePage.jsx';
+import PageNotfound from './containers/PageNotfound.jsx';
+import DashboardPage from './containers/DashboardPage.jsx';
+
 
 const styles = {
   title: {
@@ -24,7 +25,7 @@ ReactDom.render((
     <MuiThemeProvider muiTheme={getMuiTheme()}>
       <div>
         <AppBar
-          title={<span style={styles.title}>inventory Assistant</span>}
+          title={<span style={styles.title}>Inventory Assistant</span>}
           iconElementRight={
             <div>
               <Link to="/">
@@ -36,10 +37,12 @@ ReactDom.render((
             </div>
           }>
         </AppBar>
-        <div>
+        <Switch>
           <Route exact path="/" component={LoginPage}/>
           <Route exact path="/signup" component={SignUpPage}/>
-        </div>
+          <Route exact path="/dashboard" component={DashboardPage}/>
+          <Route component={PageNotfound}/>
+        </Switch>
       </div>
     </MuiThemeProvider>
   </Router>

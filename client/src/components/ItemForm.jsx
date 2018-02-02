@@ -5,15 +5,15 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
 
-const SignUpForm = ({
+const ItemForm = ({
   onSubmit,
   onChange,
   errors,
-  user,
+  quantity,
 }) => (
   <Card className="container">
-    <form action="/" onSubmit={onSubmit}>
-      <h2 className="card-heading">Sign Up</h2>
+    <form  onSubmit={onSubmit}>
+      <h2 className="card-heading">Add New Item</h2>
 
       {errors.summary && <p className="error-message">{errors.summary}</p>}
 
@@ -23,45 +23,52 @@ const SignUpForm = ({
           name="name"
           errorText={errors.name}
           onChange={onChange}
-          value={user.name}
+          value={item.name}
         />
       </div>
 
       <div className="field-line">
         <TextField
-          floatingLabelText="Email"
-          name="email"
-          errorText={errors.email}
+          floatingLabelText="Description"
+          name="description"
+          errorText={errors.name}
           onChange={onChange}
-          value={user.email}
+          value={item.description}
+        />
+      </div>
+      <div className="field-line">
+        <TextField
+          floatingLabelText="quantity"
+          name="quantity"
+          errorText={errors.name}
+          onChange={onChange}
+          value={item.quantity}
         />
       </div>
 
       <div className="field-line">
         <TextField
-          floatingLabelText="Password"
-          type="password"
-          name="password"
+          floatingLabelText="price"
+          type="number"
+          name="price"
           onChange={onChange}
-          errorText={errors.password}
-          value={user.password}
+          errorText={errors.name}
+          value={item.price}
         />
       </div>
 
       <div className="button-line">
-        <RaisedButton type="submit" label="Create New Account" primary />
+        <RaisedButton type="submit" label="Submit" primary />
       </div>
-
-      <CardText>Already have an account? <Link to={'/'}>Log in</Link></CardText>
     </form>
   </Card>
 );
 
-SignUpForm.propTypes = {
+ItemForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired
 };
 
-export default SignUpForm;
+export default ItemForm;

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Card, CardTitle, CardText } from 'material-ui/Card';
+import ItemForm from '../components/ItemForm.jsx';
 
 
 const Dashboard = ({ secretData }) => (

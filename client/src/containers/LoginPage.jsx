@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm.jsx';
 const backgroundImg = 'https://i.ytimg.com/vi/fZF3xDld69s/maxresdefault.jpg';
@@ -7,6 +8,7 @@ const divStyle ={
   backgroundSize: 'cover',
   backgroundImage: `url(${backgroundImg})`
 };
+
 
 class LoginPage extends React.Component {
 
@@ -72,7 +74,7 @@ class LoginPage extends React.Component {
 
 
         // change the current URL to /
-        this.context.router.replace('/');
+        this.context.router.history.push('/dashboard');
       } else {
         // failure
 

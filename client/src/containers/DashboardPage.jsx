@@ -41,10 +41,9 @@ class DashboardPage extends React.Component {
    */
   render() {
     return (
-<div>
-<h1>HELLO WHAT UP!!!!</h1>
-<Dashboard secretData={this.state.secretData} />
-</div>
+      <div>
+        <Dashboard secretData={this.state.secretData} />
+      </div>
 )}
 
 }

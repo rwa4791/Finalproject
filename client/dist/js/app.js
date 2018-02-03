@@ -66713,6 +66713,10 @@
 
 	var _Dashboard2 = _interopRequireDefault(_Dashboard);
 
+	var _ItemForm = __webpack_require__(602);
+
+	var _ItemForm2 = _interopRequireDefault(_ItemForm);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -66727,40 +66731,114 @@
 	  /**
 	   * Class constructor.
 	   */
-	  function DashboardPage(props) {
+	  function DashboardPage(props, context) {
 	    _classCallCheck(this, DashboardPage);
 
-	    var _this = _possibleConstructorReturn(this, (DashboardPage.__proto__ || Object.getPrototypeOf(DashboardPage)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (DashboardPage.__proto__ || Object.getPrototypeOf(DashboardPage)).call(this, props, context));
 
 	    _this.state = {
-	      secretData: ''
+	      secretData: '',
+	      errors: {},
+	      item: {
+	        name: '',
+	        description: '',
+	        quantity: '',
+	        price: ''
+	      }
 	    };
+	    _this.processForm = _this.processForm.bind(_this);
+	    _this.changeItem = _this.changeItem.bind(_this);
+
 	    return _this;
 	  }
 
-	  /**
-	   * This method will be executed after initial rendering.
-	   */
-
-
 	  _createClass(DashboardPage, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
+	    key: 'processForm',
+	    value: function processForm(event) {
 	      var _this2 = this;
 
+	      // prevent default action. in this case, action is the form submission event
+	      event.preventDefault();
+
+	      // create a string for an HTTP body message
+	      var name = encodeURIComponent(this.state.item.name);
+	      var description = encodeURIComponent(this.state.item.description);
+	      var quantity = encodeURIComponent(this.state.item.quantity);
+	      var price = encodeURIComponent(this.state.item.price);
+	      var itemData = 'name=' + name + '&description=' + description + '&quantity=' + quantity + '&price=' + price;
+
+	      // create an AJAX request
 	      var xhr = new XMLHttpRequest();
-	      xhr.open('get', '/api/dashboard');
+	      xhr.open('post', '/auth/item/');
+	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	      xhr.responseType = 'json';
+	      xhr.addEventListener('load', function () {
+	        if (xhr.status === 200) {
+	          // success
+
+	          // change the component-container state
+	          _this2.setState({
+	            errors: {}
+	          });
+
+	          // set a message
+	          localStorage.setItem('successMessage', xhr.response.message);
+
+	          // make a redirect
+	          //this.context.router.history.push('/dashboard');
+	        } else {
+	          // failure
+
+	          var errors = xhr.response.errors ? xhr.response.errors : {};
+	          errors.summary = xhr.response.message;
+
+	          _this2.setState({
+	            errors: errors
+	          });
+	        }
+	      });
+	      xhr.send(itemData);
+	    }
+	    /**
+	     * Change the user object.
+	     *
+	     * @param {object} event - the JavaScript event object
+	     */
+
+	  }, {
+	    key: 'changeItem',
+	    value: function changeItem(event) {
+	      var field = event.target.name;
+	      var item = this.state.item;
+	      item[field] = event.target.value;
+
+	      this.setState({
+	        item: item
+	      });
+	    }
+	    /**
+	     * This method will be executed after initial rendering.
+	     */
+
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this3 = this;
+
+	      var xhr = new XMLHttpRequest();
+	      xhr.open('get', '/auth/login');
 	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	      // set the authorization HTTP header
 	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
 	      xhr.responseType = 'json';
 	      xhr.addEventListener('load', function () {
 	        if (xhr.status === 200) {
-	          _this2.setState({
-	            secretData: xhr.response.message
+	          _this3.setState({
+	            secretData: xhr.response.user
 	          });
 	        }
 	      });
+	      console.log('secretData', secretData);
 	      xhr.send();
 	    }
 
@@ -66774,7 +66852,13 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_Dashboard2.default, { secretData: this.state.secretData })
+	        _react2.default.createElement(_Dashboard2.default, { secretData: this.state.secretData }),
+	        _react2.default.createElement(_ItemForm2.default, {
+	          onSubmit: this.processForm,
+	          onChange: this.changeItem,
+	          errors: this.state.errors,
+	          item: this.state.item
+	        })
 	      );
 	    }
 	  }]);
@@ -66861,7 +66945,7 @@
 	  var onSubmit = _ref.onSubmit,
 	      onChange = _ref.onChange,
 	      errors = _ref.errors,
-	      quantity = _ref.quantity;
+	      item = _ref.item;
 	  return _react2.default.createElement(
 	    _Card.Card,
 	    { className: 'container' },

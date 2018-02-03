@@ -9,7 +9,7 @@ const ItemForm = ({
   onSubmit,
   onChange,
   errors,
-  quantity,
+  item,
 }) => (
   <Card className="container">
     <form  onSubmit={onSubmit}>

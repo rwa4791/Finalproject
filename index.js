@@ -4,7 +4,6 @@ const passport = require('passport');
 const config = require('./config');
 const PORT = process.env.PORT || 3000;
 const db = require("./server/models");
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/inventoryAssistant";
 const mongoose = require('mongoose');
 
 // Set up promises with mongoose

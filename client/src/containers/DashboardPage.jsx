@@ -38,33 +38,35 @@ class DashboardPage extends React.Component {
 
     // create an AJAX request
     const xhr = new XMLHttpRequest();
-    xhr.open('post', '/auth/item/');
+    xhr.open('post', '/api/item');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        // success
-
-        // change the component-container state
-        this.setState({
-          errors: {}
-        });
-
-        // set a message
-        localStorage.setItem('successMessage', xhr.response.message);
-
-        // make a redirect
-        //this.context.router.history.push('/dashboard');
-      } else {
-        // failure
-
-        const errors = xhr.response.errors ? xhr.response.errors : {};
-        errors.summary = xhr.response.message;
-
-        this.setState({
-          errors
-        });
-      }
+      console.log(xhr)
+      // if (xhr.status === 200) {
+      //   // success
+      //
+      //   // change the component-container state
+      //   this.setState({
+      //     errors: {}
+      //   });
+      //
+      //   // set a message
+      //   localStorage.setItem('successMessage', xhr.response.message);
+      //
+      //   // make a redirect
+      //   //this.context.router.history.push('/dashboard');
+      // } else {
+      //   // failure
+      //
+      //   const errors = xhr.response.errors ? xhr.response.errors : {};
+      //   errors.summary = xhr.response.message;
+      //
+      //   this.setState({
+      //     errors
+      //   });
+      // }
     });
     xhr.send(itemData);
   }

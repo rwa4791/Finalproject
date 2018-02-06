@@ -66755,8 +66755,6 @@
 	  _createClass(DashboardPage, [{
 	    key: 'processForm',
 	    value: function processForm(event) {
-	      var _this2 = this;
-
 	      // prevent default action. in this case, action is the form submission event
 	      event.preventDefault();
 
@@ -66769,33 +66767,35 @@
 
 	      // create an AJAX request
 	      var xhr = new XMLHttpRequest();
-	      xhr.open('post', '/auth/item/');
+	      xhr.open('post', '/api/item');
 	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
 	      xhr.responseType = 'json';
 	      xhr.addEventListener('load', function () {
-	        if (xhr.status === 200) {
-	          // success
-
-	          // change the component-container state
-	          _this2.setState({
-	            errors: {}
-	          });
-
-	          // set a message
-	          localStorage.setItem('successMessage', xhr.response.message);
-
-	          // make a redirect
-	          //this.context.router.history.push('/dashboard');
-	        } else {
-	          // failure
-
-	          var errors = xhr.response.errors ? xhr.response.errors : {};
-	          errors.summary = xhr.response.message;
-
-	          _this2.setState({
-	            errors: errors
-	          });
-	        }
+	        console.log(xhr);
+	        // if (xhr.status === 200) {
+	        //   // success
+	        //
+	        //   // change the component-container state
+	        //   this.setState({
+	        //     errors: {}
+	        //   });
+	        //
+	        //   // set a message
+	        //   localStorage.setItem('successMessage', xhr.response.message);
+	        //
+	        //   // make a redirect
+	        //   //this.context.router.history.push('/dashboard');
+	        // } else {
+	        //   // failure
+	        //
+	        //   const errors = xhr.response.errors ? xhr.response.errors : {};
+	        //   errors.summary = xhr.response.message;
+	        //
+	        //   this.setState({
+	        //     errors
+	        //   });
+	        // }
 	      });
 	      xhr.send(itemData);
 	    }
@@ -66823,7 +66823,7 @@
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this3 = this;
+	      var _this2 = this;
 
 	      var xhr = new XMLHttpRequest();
 	      xhr.open('get', '/auth/login');
@@ -66833,7 +66833,7 @@
 	      xhr.responseType = 'json';
 	      xhr.addEventListener('load', function () {
 	        if (xhr.status === 200) {
-	          _this3.setState({
+	          _this2.setState({
 	            secretData: xhr.response.user
 	          });
 	        }

@@ -35,8 +35,8 @@ module.exports = {
   },
   create: function(req, res) {
     db.Item
-      .create(req.body)
-      .then( userUpdateNewItem(dbItem,req.params.id))
+      .create(req)
+      //.then( userUpdateNewItem(dbItem,req.params.id))
       .then(dbModel => {
         res.json(dbModel);
       })

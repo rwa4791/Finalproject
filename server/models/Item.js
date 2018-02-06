@@ -2,24 +2,24 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const items = {
-  quantity: { type: Number , required: true,
-              default: 1                        },
-  price:    { type : Number, required: true,
-              default: 0                        },
-  date:     { type : Date  , required: true,
-              default: Date.now                 }
-};
+// const items = {
+//   quantity: { type: Number , required: true,
+//               default: 1                        },
+//   price:    { type : Number, required: true,
+//               default: 0                        },
+//   date:     { type : Date  , required: true,
+//               default: Date.now                 }
+// };
 //Creating schema
 const itemSchema = new Schema({
   //_id:
-  name:         { type: String    , required: true,
+  name:         { type: String    , required: false,
                   trim: true                          },
 
-  description:  { type: String    , required: true,
+  description:  { type: String    , required: false,
                   trim: true                          },
 
-  quantity:     { type: Number    , required: true    },
+  quantity:     { type: Number    , required: false    },
 
   price:        { type: Number    , required: false,
                   default: 0                          },
@@ -27,14 +27,12 @@ const itemSchema = new Schema({
   itemsSold:  [ {type: Schema.Types.Mixed             } ],
 
   user_id:      { type: Schema.Types.ObjectId,
-                  required: true
+                  required: false
                 },
 
   date:         { type: Date      , default: Date.now,
-                  required: true
+                  required: false
                 }
 });
-//Creating models
-const Item = mongoose.model("Item", itemSchema);
 //Exporting
-module.exports = Item;
+module.exports = mongoose.model('Item', itemSchema);

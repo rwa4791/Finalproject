@@ -3,11 +3,19 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const config = require('./config');
 const PORT = process.env.PORT || 3000;
+const db = require("./server/models");
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/inventoryAssistant";
+const mongoose = require('mongoose');
 
-// connect to the database and load models
-require('./server/models').connect(MONGODB_URI);
-
+// Set up promises with mongoose
+mongoose.Promise = global.Promise;
+// Connect to the Mongo DB
+mongoose.connect(
+  process.env.MONGODB_URI || "mongodb://localhost/inventoryAssistant",
+  {
+    useMongoClient: true
+  }
+);
 const app = express();
 // tell the app to look for static files in these directories
 app.use(express.static('./server/static/'));

@@ -4,14 +4,14 @@ const itemsController = require("../controllers/itemsController");
 
 
 //
-function userUpdateNewItem (dbItem, id) {
-  return db.User
-    .findByIdAndUpdate(
-      id,
-      { $push: { item_list: dbItem }},
-      { new : true}
-    )
-}
+// function userUpdateNewItem (dbItem, id) {
+//   return db.User
+//     .findByIdAndUpdate(
+//       id,
+//       { $push: { item_list: dbItem }},
+//       { new : true}
+//     )
+// }
 
 
 router.get('/dashboard', (req, res) => {

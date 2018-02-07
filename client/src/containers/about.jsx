@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
+import RaisedButton from 'material-ui/RaisedButton';
+
 
 
 
@@ -25,7 +27,16 @@ const About = () =>
 </div>
 
 <div> 
-	<h3> How it works </h3>
+	<h3> Who Are We? </h3>
+		<p> Sale Assistant was founded by Robert Angus, Hector Candelaria, and Christian Vasquez. while attending the Rutgers Bootcamp.
+		It was launched on February 14th 2018.
+		</p>
 </div>
+
+<div>
+	<h3> Getting Started </h3>
+        <RaisedButton type="submit" label="Get Started" primary  /> <Link to={'/signup'}> </Link>
+</div>
+
 
 export default About;

@@ -65,7 +65,7 @@ module.exports = {
   },
   sellItem: function(req,res){
     db.Item
-      .itemUpdateSoldItem(req.body, req.params.id,)
+      .itemUpdateSoldItem(req.body, req.params.id)
       .then(dbItem => res.json(dbItem))
       .then(updateQuantity())
       .catch(err => res.status(422).json(err));

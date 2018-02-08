@@ -66032,7 +66032,7 @@
 
 	      // create an AJAX request
 	      var xhr = new XMLHttpRequest();
-	      xhr.open('post', '/auth/login');
+	      xhr.open('POST', '/auth/login');
 	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	      xhr.responseType = 'json';
 	      xhr.addEventListener('load', function () {
@@ -66046,6 +66046,8 @@
 
 	          // save the token
 	          _Auth2.default.authenticateUser(xhr.response.token);
+	          //Save User _id
+	          localStorage.setItem('_id', xhr.response.user.id);
 
 	          // change the current URL to /
 	          _this2.context.router.history.push('/dashboard');
@@ -66371,7 +66373,7 @@
 
 	      // create an AJAX request
 	      var xhr = new XMLHttpRequest();
-	      xhr.open('post', '/auth/signup');
+	      xhr.open('POST', '/auth/signup');
 	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	      xhr.responseType = 'json';
 	      xhr.addEventListener('load', function () {
@@ -66717,6 +66719,10 @@
 
 	var _ItemForm2 = _interopRequireDefault(_ItemForm);
 
+	var _ItemTable = __webpack_require__(603);
+
+	var _ItemTable2 = _interopRequireDefault(_ItemTable);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -66737,8 +66743,10 @@
 	    var _this = _possibleConstructorReturn(this, (DashboardPage.__proto__ || Object.getPrototypeOf(DashboardPage)).call(this, props, context));
 
 	    _this.state = {
+	      itemArray: [],
 	      secretData: '',
 	      errors: {},
+	      _id: localStorage.getItem('_id'),
 	      item: {
 	        name: '',
 	        description: '',
@@ -66757,47 +66765,23 @@
 	    value: function processForm(event) {
 	      // prevent default action. in this case, action is the form submission event
 	      event.preventDefault();
-
 	      // create a string for an HTTP body message
 	      var name = encodeURIComponent(this.state.item.name);
 	      var description = encodeURIComponent(this.state.item.description);
 	      var quantity = encodeURIComponent(this.state.item.quantity);
 	      var price = encodeURIComponent(this.state.item.price);
-	      var itemData = 'name=' + name + '&description=' + description + '&quantity=' + quantity + '&price=' + price;
+	      var user_id = encodeURIComponent(this.state._id);
+	      var itemData = 'name=' + name + '&description=' + description + '&quantity=' + quantity + '&price=' + price + '&user_id=' + user_id;
 
 	      // create an AJAX request
 	      var xhr = new XMLHttpRequest();
-	      xhr.open('post', '/api/item');
+	      xhr.open('POST', '/api/item');
 	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
 	      xhr.responseType = 'json';
-	      xhr.addEventListener('load', function () {
-	        console.log(xhr);
-	        // if (xhr.status === 200) {
-	        //   // success
-	        //
-	        //   // change the component-container state
-	        //   this.setState({
-	        //     errors: {}
-	        //   });
-	        //
-	        //   // set a message
-	        //   localStorage.setItem('successMessage', xhr.response.message);
-	        //
-	        //   // make a redirect
-	        //   //this.context.router.history.push('/dashboard');
-	        // } else {
-	        //   // failure
-	        //
-	        //   const errors = xhr.response.errors ? xhr.response.errors : {};
-	        //   errors.summary = xhr.response.message;
-	        //
-	        //   this.setState({
-	        //     errors
-	        //   });
-	        // }
-	      });
+	      xhr.addEventListener('load', function () {});
 	      xhr.send(itemData);
+	      //TODO: clear the form!
 	    }
 	    /**
 	     * Change the user object.
@@ -66805,6 +66789,11 @@
 	     * @param {object} event - the JavaScript event object
 	     */
 
+	  }, {
+	    key: 'userHasInventory',
+	    value: function userHasInventory() {
+	      if (this.state.itemArray.length === 0) return false;else return true;
+	    }
 	  }, {
 	    key: 'changeItem',
 	    value: function changeItem(event) {
@@ -66825,21 +66814,21 @@
 	    value: function componentDidMount() {
 	      var _this2 = this;
 
+	      var user_id = encodeURIComponent(this.state._id);
+	      var userData = 'user_id=' + user_id;
+
+	      // create an AJAX request
 	      var xhr = new XMLHttpRequest();
-	      xhr.open('get', '/auth/login');
+	      xhr.open('GET', '/api/item/user/' + user_id);
 	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	      // set the authorization HTTP header
 	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
 	      xhr.responseType = 'json';
 	      xhr.addEventListener('load', function () {
-	        if (xhr.status === 200) {
-	          _this2.setState({
-	            secretData: xhr.response.user
-	          });
-	        }
+	        _this2.setState({
+	          itemArray: xhr.response
+	        });
 	      });
-	      console.log('secretData', secretData);
-	      xhr.send();
+	      xhr.send(userData);
 	    }
 
 	    /**
@@ -66852,7 +66841,11 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_Dashboard2.default, { secretData: this.state.secretData }),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(_ItemTable2.default, { itemArray: this.state.itemArray })
+	        ),
 	        _react2.default.createElement(_ItemForm2.default, {
 	          onSubmit: this.processForm,
 	          onChange: this.changeItem,
@@ -67024,6 +67017,230 @@
 	};
 
 	exports.default = ItemForm;
+
+/***/ }),
+/* 603 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Table = __webpack_require__(531);
+
+	var _ItemRow = __webpack_require__(604);
+
+	var _ItemRow2 = _interopRequireDefault(_ItemRow);
+
+	var _Card = __webpack_require__(428);
+
+	var _Row = __webpack_require__(605);
+
+	var _Row2 = _interopRequireDefault(_Row);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * A simple table demonstrating the hierarchy of the `Table` component and its sub-components.
+	 */
+
+	var ItemTable = function (_React$Component) {
+	  _inherits(ItemTable, _React$Component);
+
+	  function ItemTable(props) {
+	    _classCallCheck(this, ItemTable);
+
+	    return _possibleConstructorReturn(this, (ItemTable.__proto__ || Object.getPrototypeOf(ItemTable)).call(this, props));
+	  }
+
+	  _createClass(ItemTable, [{
+	    key: 'render',
+	    value: function render() {
+
+	      console.log(this.props);
+	      return _react2.default.createElement(
+	        _Card.Card,
+	        { className: 'container' },
+	        _react2.default.createElement(
+	          _Table.Table,
+	          null,
+	          _react2.default.createElement(
+	            _Table.TableHeader,
+	            null,
+	            _react2.default.createElement(
+	              _Table.TableRow,
+	              null,
+	              _react2.default.createElement(
+	                _Table.TableHeaderColumn,
+	                null,
+	                'Name'
+	              ),
+	              _react2.default.createElement(
+	                _Table.TableHeaderColumn,
+	                null,
+	                'quantity'
+	              ),
+	              _react2.default.createElement(
+	                _Table.TableHeaderColumn,
+	                null,
+	                'price'
+	              ),
+	              _react2.default.createElement(
+	                _Table.TableHeaderColumn,
+	                null,
+	                'description'
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            _Table.TableBody,
+	            null,
+	            this.props.itemArray.map(function (item) {
+
+	              return _react2.default.createElement(_Row2.default, {
+	                key: item._id,
+	                name: item.name,
+	                quantity: item.quantity,
+	                price: item.price,
+	                description: item.description
+	              });
+	            })
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return ItemTable;
+	}(_react2.default.Component);
+
+	exports.default = ItemTable;
+
+/***/ }),
+/* 604 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Table = __webpack_require__(531);
+
+	var _Row = __webpack_require__(605);
+
+	var _Row2 = _interopRequireDefault(_Row);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //Import packages
+
+
+	//Class ItemRow is the background
+	var ItemRow = function (_Component) {
+	  _inherits(ItemRow, _Component);
+
+	  function ItemRow(props) {
+	    _classCallCheck(this, ItemRow);
+
+	    return _possibleConstructorReturn(this, (ItemRow.__proto__ || Object.getPrototypeOf(ItemRow)).call(this, props));
+	  }
+
+	  //On component mount
+
+
+	  _createClass(ItemRow, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {}
+
+	    //eventHandler
+
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(_Table.TableBody, null);
+	    }
+	  }]);
+
+	  return ItemRow;
+	}(_react.Component);
+
+	;
+
+	//Export Form
+	exports.default = ItemRow;
+
+/***/ }),
+/* 605 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Table = __webpack_require__(531);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Row = function Row(props) {
+	  return _react2.default.createElement(
+	    _Table.TableRow,
+	    null,
+	    _react2.default.createElement(
+	      _Table.TableRowColumn,
+	      null,
+	      props.name
+	    ),
+	    _react2.default.createElement(
+	      _Table.TableRowColumn,
+	      null,
+	      props.quantity
+	    ),
+	    _react2.default.createElement(
+	      _Table.TableRowColumn,
+	      null,
+	      props.price
+	    ),
+	    _react2.default.createElement(
+	      _Table.TableRowColumn,
+	      null,
+	      props.description
+	    )
+	  );
+	};
+
+	exports.default = Row;
 
 /***/ })
 /******/ ]);

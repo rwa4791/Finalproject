@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import Auth from '../modules/Auth';
 import Dashboard from '../components/Dashboard.jsx';
 import ItemForm from '../components/ItemForm.jsx';
+import ItemTable from './ItemTable.jsx';
 
 class DashboardPage extends React.Component {
 
@@ -12,69 +13,54 @@ class DashboardPage extends React.Component {
     super(props, context);
 
     this.state = {
+      itemArray: [],
       secretData: '',
       errors: {},
+      _id: localStorage.getItem('_id'),
       item: {
         name: '',
         description: '',
         quantity: '',
-        price: ''
-      }
+        price: '',
+      },
     };
     this.processForm = this.processForm.bind(this);
     this.changeItem = this.changeItem.bind(this);
 
   }
+
   processForm(event) {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
-
     // create a string for an HTTP body message
     const name = encodeURIComponent(this.state.item.name);
     const description = encodeURIComponent(this.state.item.description);
     const quantity = encodeURIComponent(this.state.item.quantity);
     const price = encodeURIComponent(this.state.item.price);
-    const itemData = `name=${name}&description=${description}&quantity=${quantity}&price=${price}`;
+    const user_id = encodeURIComponent(this.state._id);
+    const itemData = `name=${name}&description=${description}&quantity=${quantity}&price=${price}&user_id=${user_id}`;
 
     // create an AJAX request
     const xhr = new XMLHttpRequest();
-    xhr.open('post', '/api/item');
+    xhr.open('POST', '/api/item');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
-      console.log(xhr)
-      // if (xhr.status === 200) {
-      //   // success
-      //
-      //   // change the component-container state
-      //   this.setState({
-      //     errors: {}
-      //   });
-      //
-      //   // set a message
-      //   localStorage.setItem('successMessage', xhr.response.message);
-      //
-      //   // make a redirect
-      //   //this.context.router.history.push('/dashboard');
-      // } else {
-      //   // failure
-      //
-      //   const errors = xhr.response.errors ? xhr.response.errors : {};
-      //   errors.summary = xhr.response.message;
-      //
-      //   this.setState({
-      //     errors
-      //   });
-      // }
+
     });
     xhr.send(itemData);
+    //TODO: clear the form!
   }
   /**
    * Change the user object.
    *
    * @param {object} event - the JavaScript event object
    */
+  userHasInventory() {
+    if (this.state.itemArray.length === 0 ) return false;
+    else return true;
+  }
   changeItem(event) {
     const field = event.target.name;
     const item = this.state.item;
@@ -88,21 +74,22 @@ class DashboardPage extends React.Component {
    * This method will be executed after initial rendering.
    */
   componentDidMount() {
+
+    const user_id = encodeURIComponent(this.state._id);
+    const userData = `user_id=${user_id}`;
+
+    // create an AJAX request
     const xhr = new XMLHttpRequest();
-    xhr.open('get', '/auth/login');
+    xhr.open('GET', `/api/item/user/${user_id}`);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    // set the authorization HTTP header
     xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        this.setState({
-          secretData: xhr.response.user
-        });
-      }
+      this.setState({
+        itemArray: xhr.response
+      });
     });
-    console.log('secretData', secretData);
-    xhr.send();
+    xhr.send(userData);
   }
 
   /**
@@ -111,7 +98,9 @@ class DashboardPage extends React.Component {
   render() {
     return (
       <div>
-        <Dashboard secretData={this.state.secretData} />
+        <div>
+          <ItemTable itemArray={this.state.itemArray}/>
+        </div>
         <ItemForm
           onSubmit={this.processForm}
           onChange={this.changeItem}
@@ -119,7 +108,8 @@ class DashboardPage extends React.Component {
           item={this.state.item}
         />
       </div>
-)}
+    )
+  }
 
 }
 

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const Schema = mongoose.Schema;
 
 // define the User model schema
 const UserSchema = new mongoose.Schema({
@@ -8,8 +9,10 @@ const UserSchema = new mongoose.Schema({
     index: { unique: true }
   },
   password: String,
-  name: String
+  name: String,
+  item_list: [{ type: Schema.Types.ObjectId }]
 });
+
 
 
 UserSchema.methods.comparePassword = function comparePassword(password, callback) {

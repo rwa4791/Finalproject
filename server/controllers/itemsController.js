@@ -1,7 +1,8 @@
 const db = require("../models");
+const mongoose = require('mongoose');
 
 function userUpdateNewItem (dbItem, id) {
-  return db.User
+  return db.user
     .findByIdAndUpdate(
       id,
       { $push: { item_list: dbItem }},
@@ -30,13 +31,27 @@ module.exports = {
   findById: function(req, res) {
     db.Item
       .findById(req.params.id)
-      .then(dbModel => res.json(dbModel))
+      .then(dbModel => {
+        console.log(dbModel);
+        res.json(dbModel);
+      })
+      .catch(err => res.status(422).json(err));
+  },
+  findByUser: function(req, res) {
+    db.Item
+      .find({
+        'user_id': mongoose.Types.ObjectId(req.params.id)
+      })
+      .then(dbModel => {
+        console.log(dbModel);
+        res.json(dbModel);
+      })
       .catch(err => res.status(422).json(err));
   },
   create: function(req, res) {
     db.Item
-      .create(req)
-      //.then( userUpdateNewItem(dbItem,req.params.id))
+      .create(req.body)
+      .then(dbItem => userUpdateNewItem(dbItem ,req.body.user_id))
       .then(dbModel => {
         res.json(dbModel);
       })

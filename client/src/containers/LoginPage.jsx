@@ -57,7 +57,7 @@ class LoginPage extends React.Component {
 
     // create an AJAX request
     const xhr = new XMLHttpRequest();
-    xhr.open('post', '/auth/login');
+    xhr.open('POST', '/auth/login');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
@@ -71,7 +71,8 @@ class LoginPage extends React.Component {
 
         // save the token
         Auth.authenticateUser(xhr.response.token);
-
+        //Save User _id
+        localStorage.setItem('_id', xhr.response.user.id);
 
         // change the current URL to /
         this.context.router.history.push('/dashboard');

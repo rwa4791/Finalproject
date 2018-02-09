@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm.jsx';
+import ItemModal from '../containers/ItemModal.jsx';
+
 const backgroundImg = 'https://i.ytimg.com/vi/fZF3xDld69s/maxresdefault.jpg';
 
 const divStyle ={
@@ -72,10 +74,14 @@ class LoginPage extends React.Component {
         // save the token
         Auth.authenticateUser(xhr.response.token);
         //Save User _id
-        localStorage.setItem('_id', xhr.response.user.id);
+        //localStorage.setItem('_id', xhr.response.user.id);
 
         // change the current URL to /
-        this.context.router.history.push('/dashboard');
+        // this.context.router.history.push('/dashboard');
+        this.props.history.push({
+          pathname: '/dashboard',
+          state: { _id: xhr.response.user.id }
+        })
       } else {
         // failure
 

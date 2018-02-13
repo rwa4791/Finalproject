@@ -51,9 +51,9 @@ module.exports = {
   create: function(req, res) {
     db.Item
       .create(req.body)
-      .then(dbItem => userUpdateNewItem(dbItem ,req.body.user_id))
-      .then(dbModel => {
-        res.json(dbModel);
+      .then(dbItem => {
+        userUpdateNewItem(dbItem ,req.body.user_id)
+        res.json(dbItem)
       })
       .catch(err => res.status(422).json(err));
   },

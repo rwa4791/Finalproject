@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
-import TabsExampleSimple from '../components/Aboutform.jsx';
+import TabsExampleSimple from '../components/priceform.jsx';
 const backgroundImg = 'https://i.ytimg.com/vi/fZF3xDld69s/maxresdefault.jpg';
 
 
@@ -10,11 +10,11 @@ const divStyle ={
 };
 
 
-class About extends React.Component {
+class Price extends React.Component {
 
 render() {
     return (
-   <div>
+      <div style={ divStyle }>
       <TabsExampleSimple
       />
      </div>
@@ -23,4 +23,4 @@ render() {
 
 }
 
-export default About;
+export default Price;

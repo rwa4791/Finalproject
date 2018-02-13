@@ -10,6 +10,8 @@ import SignUpPage from './containers/SignUpPage.jsx';
 import HomePage from './containers/HomePage.jsx';
 import PageNotfound from './containers/PageNotfound.jsx';
 import DashboardPage from './containers/DashboardPage.jsx';
+import About from './containers/about.jsx';
+import Price from './containers/price.jsx';
 
 
 const styles = {
@@ -34,6 +36,12 @@ ReactDom.render((
               <Link to="/signup">
                 <FlatButton label="SIGN UP"/>
               </Link>
+               <Link to="/about">
+                <FlatButton label="About"/>
+              </Link>
+               <Link to="/Price">
+                <FlatButton label="Subscription"/>
+              </Link>
             </div>
           }>
         </AppBar>
@@ -41,6 +49,8 @@ ReactDom.render((
           <Route exact path="/" component={LoginPage}/>
           <Route exact path="/signup" component={SignUpPage}/>
           <Route exact path="/dashboard" component={DashboardPage}/>
+          <Route exact path="/about" component={About}/>
+          <Route exact path="/price" component={Price}/>
           <Route component={PageNotfound}/>
         </Switch>
       </div>

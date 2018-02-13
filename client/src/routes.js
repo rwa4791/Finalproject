@@ -14,6 +14,9 @@ const routes = {
     {
       path: '/',
       getComponent: (location, callback) => {
+        
+        console.log("hello");
+        
         if (Auth.isUserAuthenticated()) {
           callback(null, DashboardPage);
         } else {

@@ -75,7 +75,8 @@ class LoginPage extends React.Component {
         localStorage.setItem('_id', xhr.response.user.id);
 
         // change the current URL to /
-        this.context.router.history.push('/dashboard');
+        /*this.context.router.history.push('/dashboard');*/
+        window.location = "/";
       } else {
         // failure
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -13,7 +14,9 @@ import DashboardPage from './containers/DashboardPage.jsx';
 import About from './containers/about.jsx';
 import Price from './containers/price.jsx';
 
-
+const appBarTitleStyle={
+  textAlign: "center"
+}
 const styles = {
   title: {
     cursor: 'pointer',
@@ -27,6 +30,8 @@ ReactDom.render((
     <MuiThemeProvider muiTheme={getMuiTheme()}>
       <div>
         <AppBar
+          titleStyle={appBarTitleStyle}
+          showMenuIconButton={false}
           title={<span style={styles.title}>Inventory Assistant</span>}
           iconElementRight={
             <div>

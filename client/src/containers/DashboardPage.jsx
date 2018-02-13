@@ -1,9 +1,20 @@
+//Import packages
 import React, { PropTypes } from 'react';
 import Auth from '../modules/Auth';
 import Dashboard from '../components/Dashboard.jsx';
 import ItemForm from '../components/ItemForm.jsx';
 import ItemTable from './ItemTable.jsx';
+import ItemModal from '../containers/ItemModal.jsx';
+import Card from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
+import ChartsCard from './ChartsCard.jsx';
 
+//Styles
+const buttonStyle = {
+  margin: 5,
+};
+
+// Comtainer
 class DashboardPage extends React.Component {
 
   /**
@@ -13,10 +24,10 @@ class DashboardPage extends React.Component {
     super(props, context);
 
     this.state = {
+      _id: this.props.location.state._id,
       itemArray: [],
       secretData: '',
       errors: {},
-      _id: localStorage.getItem('_id'),
       item: {
         name: '',
         description: '',
@@ -26,7 +37,6 @@ class DashboardPage extends React.Component {
     };
     this.processForm = this.processForm.bind(this);
     this.changeItem = this.changeItem.bind(this);
-
   }
 
   processForm(event) {
@@ -40,6 +50,16 @@ class DashboardPage extends React.Component {
     const user_id = encodeURIComponent(this.state._id);
     const itemData = `name=${name}&description=${description}&quantity=${quantity}&price=${price}&user_id=${user_id}`;
 
+    //Clear form
+    this.setState({
+      item: {
+        name: '',
+        description: '',
+        quantity: '',
+        price: '',
+      }
+    })
+
     // create an AJAX request
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/item');
@@ -47,10 +67,21 @@ class DashboardPage extends React.Component {
     xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
-
+      //If successfully created a item
+      if (xhr.status === 200) {
+        let resItem = {
+          name: xhr.response.name,
+          description: xhr.response.description,
+          quantity: xhr.response.quantity,
+          price: xhr.response.price,
+        };
+      //Push response to itemArray
+        this.setState(previousState => ({
+          itemArray: [...previousState.itemArray, resItem]
+        }));
+      }
     });
     xhr.send(itemData);
-    //TODO: clear the form!
   }
   /**
    * Change the user object.
@@ -74,13 +105,10 @@ class DashboardPage extends React.Component {
    * This method will be executed after initial rendering.
    */
   componentDidMount() {
-
-    const user_id = encodeURIComponent(this.state._id);
-    const userData = `user_id=${user_id}`;
-
+    const userData = `user_id=${this.state._id}`;
     // create an AJAX request
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', `/api/item/user/${user_id}`);
+    xhr.open('GET', `/api/item/user/${this.state._id}`);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
     xhr.responseType = 'json';
@@ -98,15 +126,19 @@ class DashboardPage extends React.Component {
   render() {
     return (
       <div>
-        <div>
+        <Card className='container'>
+          <h2 className="card-heading">Inventory</h2>
+          <ChartsCard itemArray={this.state.itemArray}/>
+        </Card>
+        <Card className='container'>
           <ItemTable itemArray={this.state.itemArray}/>
-        </div>
-        <ItemForm
-          onSubmit={this.processForm}
-          onChange={this.changeItem}
-          errors={this.state.errors}
-          item={this.state.item}
-        />
+          <ItemModal
+            onSubmit={this.processForm}
+            onChange={this.changeItem}
+            errors={this.state.errors}
+            item={this.state.item}
+            />
+        </Card>
       </div>
     )
   }

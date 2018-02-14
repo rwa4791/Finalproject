@@ -46,6 +46,7 @@ ReactDom.render((
           <Route exact path="/" component={LoginPage}/>
           <Route exact path="/signup" component={SignUpPage}/>
           <Route exact path="/dashboard" component={DashboardPage}/>
+          <Route exact path="/logout" component={DashboardPage}/>
           <Route component={PageNotfound}/>
         </Switch>
       </div>

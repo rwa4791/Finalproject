@@ -4,7 +4,8 @@ import Auth from '../modules/Auth';
 import Dashboard from '../components/Dashboard.jsx';
 import ItemForm from '../components/ItemForm.jsx';
 import ItemTable from './ItemTable.jsx';
-import ItemModal from '../containers/ItemModal.jsx';
+import AddItemModal from '../components/AddItemModal.jsx';
+import SellItemModal from '../components/SellItemModal.jsx';
 import Card from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import ChartsCard from './ChartsCard.jsx';
@@ -26,8 +27,11 @@ class DashboardPage extends React.Component {
     this.state = {
       _id: this.props.location.state._id,
       itemArray: [],
+      itemsChecked: [],
       secretData: '',
       errors: {},
+      openAddItem: false,
+      openSellItem: false,
       item: {
         name: '',
         description: '',
@@ -35,10 +39,15 @@ class DashboardPage extends React.Component {
         price: '',
       },
     };
+    //Bind function to this component
     this.processForm = this.processForm.bind(this);
     this.changeItem = this.changeItem.bind(this);
-  }
+    this.addHandleModal = this.addHandleModal.bind(this);
+    this.sellHandleModal = this.sellHandleModal.bind(this);
+    this.handleRowSelection = this.handleRowSelection.bind(this);
 
+  }
+  //Add a new Item function
   processForm(event) {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
@@ -83,15 +92,12 @@ class DashboardPage extends React.Component {
     });
     xhr.send(itemData);
   }
+
   /**
-   * Change the user object.
+   * Change the Item object.
    *
    * @param {object} event - the JavaScript event object
    */
-  userHasInventory() {
-    if (this.state.itemArray.length === 0 ) return false;
-    else return true;
-  }
   changeItem(event) {
     const field = event.target.name;
     const item = this.state.item;
@@ -100,6 +106,25 @@ class DashboardPage extends React.Component {
     this.setState({
       item
     });
+  }
+  //Add checked item to itemsChecked
+  handleRowSelection( selectedRows ){
+    //Empety itemsChecked Array
+    this.setState({
+      itemsChecked: []
+    })
+
+    if(selectedRows === 'all'){
+      console.log('HELLO');
+    }else{
+      //Add Item to itemsChecked
+      selectedRows.map((row) => {
+        this.setState(previousState => ({
+          itemsChecked: [...previousState.itemsChecked, previousState.itemArray[row]]
+        }))
+      })
+    }
+
   }
   /**
    * This method will be executed after initial rendering.
@@ -119,7 +144,36 @@ class DashboardPage extends React.Component {
     });
     xhr.send(userData);
   }
+  addHandleOpen() {
+    this.setState({openAddItem: true});
+  };
 
+  addHandleClose() {
+    this.setState({openAddItem: false});
+  };
+  addHandleModal(event){
+    event.preventDefault();
+    if(this.state.openAddItem ) {
+      this.addHandleClose();
+    }else {
+      this.addHandleOpen();
+    }
+  }
+  sellHandleOpen() {
+    this.setState({openSellItem: true});
+  };
+
+  sellHandleClose() {
+    this.setState({openSellItem: false});
+  };
+  sellHandleModal(event){
+    event.preventDefault();
+    if(this.state.openSellItem ) {
+      this.sellHandleClose();
+    }else {
+      this.sellHandleOpen();
+    }
+  }
   /**
    * Render the component.
    */
@@ -131,12 +185,28 @@ class DashboardPage extends React.Component {
           <ChartsCard itemArray={this.state.itemArray}/>
         </Card>
         <Card className='container'>
-          <ItemTable itemArray={this.state.itemArray}/>
-          <ItemModal
+          <ItemTable
+            itemArray={this.state.itemArray}
+            handleRowSelection={this.handleRowSelection}
+          />
+          <RaisedButton style={buttonStyle} onClick={this.addHandleModal} label="Add"  primary />
+          <RaisedButton style={buttonStyle} onClick={this.sellHandleModal} label="Sell"  primary />
+
+          <AddItemModal
+            handleModal={this.addHandleModal}
+            open={this.state.openAddItem}
             onSubmit={this.processForm}
             onChange={this.changeItem}
             errors={this.state.errors}
             item={this.state.item}
+          />
+          <SellItemModal
+              itemArray={this.state.itemsChecked}
+              handleModal={this.sellHandleModal}
+              open={this.state.openSellItem}
+              onSubmit={this.processForm}
+              onChange={this.changeItem}
+              errors={this.state.errors}
             />
         </Card>
       </div>

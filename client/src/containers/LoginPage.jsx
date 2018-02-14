@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom';
 import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm.jsx';
-import ItemModal from '../containers/ItemModal.jsx';
 
 const backgroundImg = 'https://i.ytimg.com/vi/fZF3xDld69s/maxresdefault.jpg';
 

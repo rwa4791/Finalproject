@@ -17,6 +17,7 @@ export default class ItemTable extends React.Component{
   render(){
     return (
       <Table
+        onRowSelection={this.props.handleRowSelection}
         fixedHeader={true}
         selectable={true}
         multiSelectable={true}
@@ -33,7 +34,9 @@ export default class ItemTable extends React.Component{
             <TableHeaderColumn>description</TableHeaderColumn>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody
+          deselectOnClickaway={false}
+        >
           {
             this.props.itemArray.map((item) =>{
             return(

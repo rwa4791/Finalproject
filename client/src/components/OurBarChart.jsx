@@ -28,7 +28,7 @@ export default class OurBarChart extends React.Component {
        <CartesianGrid strokeDasharray="3 3"/>
        <Tooltip/>
        <Legend />
-       <Bar dataKey="quantity" fill="#8884d8" />
+       <Bar dataKey="quantity" fill="#00bcd4" />
        <Bar dataKey="sold" fill="#82ca9d" />
       </BarChart>
       </div>

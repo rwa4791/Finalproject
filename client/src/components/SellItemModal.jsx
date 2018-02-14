@@ -17,9 +17,22 @@ export default class SellitemModal extends React.Component {
   //Class constructor
   constructor(props){
     super(props);
+    console.log(props);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleItemArray = this.handleItemArray.bind(this);
   }
+  handleItemArray(newItem){
+    let tempArray = this.props.itemArray;
+    for(let i = 0; i < tempArray.length; i++){
+      if(i === this.props.row){
+        tempArray[i] = newItem;
+      }
+      console.log(tempArray[i]);
+    }
 
+    console.log(tempArray);
+    this.props.updateItemArray(tempArray);
+  }
   handleSubmit(event){
     event.preventDefault();
     this.refs.itemSold.sellItem(event);
@@ -38,25 +51,20 @@ export default class SellitemModal extends React.Component {
         onClick={this.handleSubmit}
       />,
     ];
+
     return(
       <div>
           <Dialog
             actions={actions}
             open={this.props.open}
           >
-            {
-              this.props.itemArray.map((item) =>{
-                return(
-                  <SellForm
-                    ref='itemSold'
-                    key={item._id}
-                    onChange={this.props.onChange}
-                    errors={this.props.errors}
-                    item={item}
-                  />
-                )
-              })
-            }
+          <SellForm
+            ref='itemSold'
+            onChange={this.props.onChange}
+            errors={this.props.errors}
+            item={this.props.itemArray[this.props.row]}
+            handleItemArray={this.handleItemArray}
+          />
           </Dialog>
       </div>
 

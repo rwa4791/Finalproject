@@ -35,6 +35,7 @@ export default class SellForm extends React.Component {
       //If successfully created a item
       if (xhr.status === 200) {
         console.log('YYYAAAYYYY!!!!!!!!!!!!');
+        this.props.handleItemArray(xhr.response)
       }else{
         console.log('ERROR!!!!!!!!!!!');
       }
@@ -43,6 +44,7 @@ export default class SellForm extends React.Component {
   }
 
   render(){
+    console.log(this.props)
     return(
       <Card className={'container'}>
         <form style={formStyle}>

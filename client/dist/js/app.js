@@ -66871,7 +66871,7 @@
 	    _this.state = {
 	      _id: localStorage.getItem('_id'),
 	      itemArray: [],
-	      itemsChecked: [],
+	      row: '',
 	      secretData: '',
 	      errors: {},
 	      openAddItem: false,
@@ -66889,6 +66889,7 @@
 	    _this.addHandleModal = _this.addHandleModal.bind(_this);
 	    _this.sellHandleModal = _this.sellHandleModal.bind(_this);
 	    _this.handleRowSelection = _this.handleRowSelection.bind(_this);
+	    _this.updateItemArray = _this.updateItemArray.bind(_this);
 
 	    return _this;
 	  }
@@ -66964,29 +66965,31 @@
 	        item: item
 	      });
 	    }
-
+	  }, {
+	    key: 'updateItemArray',
+	    value: function updateItemArray(itemArray) {
+	      console.log(itemArray);
+	      this.setState({
+	        itemArray: itemArray
+	      });
+	    }
 	    //Add checked item to itemsChecked
 
 	  }, {
 	    key: 'handleRowSelection',
 	    value: function handleRowSelection(selectedRows) {
-	      var _this3 = this;
-
 	      //Empety itemsChecked Array
 	      this.setState({
-	        itemsChecked: []
+	        row: ''
 	      });
-
 	      if (selectedRows === 'all') {
 	        console.log('HELLO');
 	      } else {
 	        //Add Item to itemsChecked
-	        selectedRows.map(function (row) {
-	          _this3.setState(function (previousState) {
-	            return {
-	              itemsChecked: [].concat(_toConsumableArray(previousState.itemsChecked), [previousState.itemArray[row]])
-	            };
-	          });
+	        this.setState(function (previousState) {
+	          return {
+	            row: selectedRows[0]
+	          };
 	        });
 	      }
 	    }
@@ -66997,7 +67000,7 @@
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this4 = this;
+	      var _this3 = this;
 
 	      var userData = 'user_id=' + this.state._id;
 	      // create an AJAX request
@@ -67007,7 +67010,7 @@
 	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
 	      xhr.responseType = 'json';
 	      xhr.addEventListener('load', function () {
-	        _this4.setState({
+	        _this3.setState({
 	          itemArray: xhr.response
 	        });
 	      });
@@ -67091,10 +67094,12 @@
 	            item: this.state.item
 	          }),
 	          _react2.default.createElement(_SellItemModal2.default, {
-	            itemArray: this.state.itemsChecked,
+	            itemArray: this.state.itemArray,
+	            row: this.state.row,
 	            handleModal: this.sellHandleModal,
 	            open: this.state.openSellItem,
 	            onChange: this.changeItem,
+	            updateItemArray: this.updateItemArray,
 	            errors: this.state.errors
 	          })
 	        )
@@ -67570,11 +67575,27 @@
 
 	    var _this = _possibleConstructorReturn(this, (SellitemModal.__proto__ || Object.getPrototypeOf(SellitemModal)).call(this, props));
 
+	    console.log(props);
 	    _this.handleSubmit = _this.handleSubmit.bind(_this);
+	    _this.handleItemArray = _this.handleItemArray.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(SellitemModal, [{
+	    key: 'handleItemArray',
+	    value: function handleItemArray(newItem) {
+	      var tempArray = this.props.itemArray;
+	      for (var i = 0; i < tempArray.length; i++) {
+	        if (i === this.props.row) {
+	          tempArray[i] = newItem;
+	        }
+	        console.log(tempArray[i]);
+	      }
+
+	      console.log(tempArray);
+	      this.props.updateItemArray(tempArray);
+	    }
+	  }, {
 	    key: 'handleSubmit',
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
@@ -67584,8 +67605,6 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
-
 	      var actions = [_react2.default.createElement(_FlatButton2.default, {
 	        label: 'Cancel',
 	        primary: true,
@@ -67595,6 +67614,7 @@
 	        primary: true,
 	        onClick: this.handleSubmit
 	      })];
+
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -67604,14 +67624,12 @@
 	            actions: actions,
 	            open: this.props.open
 	          },
-	          this.props.itemArray.map(function (item) {
-	            return _react2.default.createElement(_SellForm2.default, {
-	              ref: 'itemSold',
-	              key: item._id,
-	              onChange: _this2.props.onChange,
-	              errors: _this2.props.errors,
-	              item: item
-	            });
+	          _react2.default.createElement(_SellForm2.default, {
+	            ref: 'itemSold',
+	            onChange: this.props.onChange,
+	            errors: this.props.errors,
+	            item: this.props.itemArray[this.props.row],
+	            handleItemArray: this.handleItemArray
 	          })
 	        )
 	      );
@@ -67683,6 +67701,8 @@
 	  _createClass(SellForm, [{
 	    key: 'sellItem',
 	    value: function sellItem(event) {
+	      var _this2 = this;
+
 	      // prevent default action. in this case, action is the form submission event
 	      event.preventDefault();
 	      // create a string for an HTTP body message
@@ -67701,6 +67721,7 @@
 	        //If successfully created a item
 	        if (xhr.status === 200) {
 	          console.log('YYYAAAYYYY!!!!!!!!!!!!');
+	          _this2.props.handleItemArray(xhr.response);
 	        } else {
 	          console.log('ERROR!!!!!!!!!!!');
 	        }
@@ -67710,6 +67731,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      console.log(this.props);
 	      return _react2.default.createElement(
 	        _Card2.default,
 	        { className: 'container' },

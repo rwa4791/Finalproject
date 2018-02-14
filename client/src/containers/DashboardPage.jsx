@@ -27,7 +27,7 @@ class DashboardPage extends React.Component {
     this.state = {
       _id: localStorage.getItem('_id'),
       itemArray: [],
-      itemsChecked: [],
+      row: '',
       secretData: '',
       errors: {},
       openAddItem: false,
@@ -45,6 +45,7 @@ class DashboardPage extends React.Component {
     this.addHandleModal = this.addHandleModal.bind(this);
     this.sellHandleModal = this.sellHandleModal.bind(this);
     this.handleRowSelection = this.handleRowSelection.bind(this);
+    this.updateItemArray = this.updateItemArray.bind(this);
 
   }
   //Add a new Item function
@@ -108,23 +109,25 @@ class DashboardPage extends React.Component {
       item
     });
   }
-
+  updateItemArray(itemArray) {
+    console.log(itemArray)
+    this.setState({
+      itemArray: itemArray
+    });
+  }
   //Add checked item to itemsChecked
   handleRowSelection( selectedRows ){
     //Empety itemsChecked Array
     this.setState({
-      itemsChecked: []
+      row: ''
     })
-
     if(selectedRows === 'all'){
       console.log('HELLO');
     }else{
       //Add Item to itemsChecked
-      selectedRows.map((row) => {
-        this.setState(previousState => ({
-          itemsChecked: [...previousState.itemsChecked, previousState.itemArray[row]]
-        }))
-      })
+      this.setState(previousState => ({
+        row: selectedRows[0]
+      }))
     }
 
   }
@@ -203,10 +206,12 @@ class DashboardPage extends React.Component {
             item={this.state.item}
           />
           <SellItemModal
-            itemArray={this.state.itemsChecked}
+            itemArray={this.state.itemArray}
+            row={this.state.row}
             handleModal={this.sellHandleModal}
             open={this.state.openSellItem}
             onChange={this.changeItem}
+            updateItemArray={this.updateItemArray}
             errors={this.state.errors}
           />
         </Card>

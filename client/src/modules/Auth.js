@@ -15,6 +15,7 @@ class Auth {
    * @returns {boolean}
    */
   static isUserAuthenticated() {
+    console.log("HELLO PANDA");
     return localStorage.getItem('token') !== null;
   }
 
@@ -23,6 +24,7 @@ class Auth {
    *
    */
   static deauthenticateUser() {
+    console.log("HELLO CHICKEN!!!");
     localStorage.removeItem('token');
   }
 

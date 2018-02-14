@@ -73,14 +73,10 @@ class LoginPage extends React.Component {
         // save the token
         Auth.authenticateUser(xhr.response.token);
         //Save User _id
-        //localStorage.setItem('_id', xhr.response.user.id);
+        localStorage.setItem('_id', xhr.response.user.id);
 
-        // change the current URL to /
-        // this.context.router.history.push('/dashboard');
-        this.props.history.push({
-          pathname: '/dashboard',
-          state: { _id: xhr.response.user.id }
-        })
+        window.location = "/";
+        
       } else {
         // failure
 

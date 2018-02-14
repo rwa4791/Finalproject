@@ -25,7 +25,7 @@ class DashboardPage extends React.Component {
     super(props, context);
 
     this.state = {
-      _id: this.props.location.state._id,
+      _id: localStorage.getItem('_id'),
       itemArray: [],
       itemsChecked: [],
       secretData: '',

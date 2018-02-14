@@ -20,7 +20,7 @@ export default class ItemTable extends React.Component{
         onRowSelection={this.props.handleRowSelection}
         fixedHeader={true}
         selectable={true}
-        multiSelectable={true}
+        multiSelectable={false}
       >
         <TableHeader
           displaySelectAll={true}

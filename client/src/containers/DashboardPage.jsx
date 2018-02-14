@@ -83,6 +83,7 @@ class DashboardPage extends React.Component {
           description: xhr.response.description,
           quantity: xhr.response.quantity,
           price: xhr.response.price,
+          sold: xhr.response.sold
         };
       //Push response to itemArray
         this.setState(previousState => ({
@@ -107,6 +108,7 @@ class DashboardPage extends React.Component {
       item
     });
   }
+
   //Add checked item to itemsChecked
   handleRowSelection( selectedRows ){
     //Empety itemsChecked Array
@@ -201,13 +203,12 @@ class DashboardPage extends React.Component {
             item={this.state.item}
           />
           <SellItemModal
-              itemArray={this.state.itemsChecked}
-              handleModal={this.sellHandleModal}
-              open={this.state.openSellItem}
-              onSubmit={this.processForm}
-              onChange={this.changeItem}
-              errors={this.state.errors}
-            />
+            itemArray={this.state.itemsChecked}
+            handleModal={this.sellHandleModal}
+            open={this.state.openSellItem}
+            onChange={this.changeItem}
+            errors={this.state.errors}
+          />
         </Card>
       </div>
     )

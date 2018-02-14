@@ -3,34 +3,58 @@ import { Link } from 'react-router-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Card from 'material-ui/Card';
+import Auth from '../modules/Auth';
 
 const formStyle ={
   margin: "auto"
 }
 
-const SellForm = ({
-  onChange,
-  errors,
-  item,
-}) => (
-  <Card className={'container'}>
-  <form style={formStyle}>
-    <h2 className="card-heading">Sell Item</h2>
+export default class SellForm extends React.Component {
 
-    {errors.summary && <p className="error-message">{errors.summary}</p>}
+  constructor(props){
+    super(props);
 
-    <div className="field-line">
-      <p><b>Item:</b> {item.name} <b>Quantity: </b> {item.quantity}</p>
-    </div>
+  }
+  //Add a new Item function
+  sellItem(event) {
+    // prevent default action. in this case, action is the form submission event
+    event.preventDefault();
+    // create a string for an HTTP body message
+    const id = encodeURIComponent(this.props.item._id);
+    const quantity = encodeURIComponent(1);
+    const price = encodeURIComponent(this.props.item.price);
+    const soldItem = `quantity=${quantity}&price=${price}`;
 
-  </form>
-</Card>
-);
+    // create an AJAX request
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `/api/item/${this.props.item._id}`);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
+    xhr.responseType = 'json';
+    xhr.addEventListener('load', () => {
+      //If successfully created a item
+      if (xhr.status === 200) {
+        console.log('YYYAAAYYYY!!!!!!!!!!!!');
+      }else{
+        console.log('ERROR!!!!!!!!!!!');
+      }
+    });
+    xhr.send(soldItem);
+  }
 
-SellForm.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
-  item: PropTypes.object.isRequired
-};
+  render(){
+    return(
+      <Card className={'container'}>
+        <form style={formStyle}>
+          <h2 className="card-heading">Sell Item</h2>
 
-export default SellForm;
+
+          <div className="field-line">
+            <p><b>Item:</b> {this.props.item.name} <b>Quantity: </b> {this.props.item.quantity}</p>
+          </div>
+
+        </form>
+      </Card>
+    )
+  }
+}

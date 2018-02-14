@@ -22,7 +22,7 @@ export default class AddItemModal extends React.Component {
   handleSubmit(event){
     event.preventDefault();
     this.props.onSubmit(event);
-    this.handleClose();
+    this.props.handleModal(event)
   }
   render(){
     const actions = [

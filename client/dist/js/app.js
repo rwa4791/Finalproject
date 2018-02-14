@@ -66933,7 +66933,8 @@
 	            name: xhr.response.name,
 	            description: xhr.response.description,
 	            quantity: xhr.response.quantity,
-	            price: xhr.response.price
+	            price: xhr.response.price,
+	            sold: xhr.response.sold
 	          };
 	          //Push response to itemArray
 	          _this2.setState(function (previousState) {
@@ -66963,6 +66964,7 @@
 	        item: item
 	      });
 	    }
+
 	    //Add checked item to itemsChecked
 
 	  }, {
@@ -67092,7 +67094,6 @@
 	            itemArray: this.state.itemsChecked,
 	            handleModal: this.sellHandleModal,
 	            open: this.state.openSellItem,
-	            onSubmit: this.processForm,
 	            onChange: this.changeItem,
 	            errors: this.state.errors
 	          })
@@ -67319,7 +67320,7 @@
 	          onRowSelection: this.props.handleRowSelection,
 	          fixedHeader: true,
 	          selectable: true,
-	          multiSelectable: true
+	          multiSelectable: false
 	        },
 	        _react2.default.createElement(
 	          _Table.TableHeader,
@@ -67465,7 +67466,7 @@
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
 	      this.props.onSubmit(event);
-	      this.handleClose();
+	      this.props.handleModal(event);
 	    }
 	  }, {
 	    key: 'render',
@@ -67543,6 +67544,10 @@
 
 	var _colors2 = _interopRequireDefault(_colors);
 
+	var _Auth = __webpack_require__(595);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -67565,7 +67570,6 @@
 
 	    var _this = _possibleConstructorReturn(this, (SellitemModal.__proto__ || Object.getPrototypeOf(SellitemModal)).call(this, props));
 
-	    console.log(props);
 	    _this.handleSubmit = _this.handleSubmit.bind(_this);
 	    return _this;
 	  }
@@ -67574,8 +67578,8 @@
 	    key: 'handleSubmit',
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
-	      this.props.onSubmit(event);
-	      this.handleClose();
+	      this.refs.itemSold.sellItem(event);
+	      this.props.handleModal(event);
 	    }
 	  }, {
 	    key: 'render',
@@ -67602,6 +67606,7 @@
 	          },
 	          this.props.itemArray.map(function (item) {
 	            return _react2.default.createElement(_SellForm2.default, {
+	              ref: 'itemSold',
 	              key: item._id,
 	              onChange: _this2.props.onChange,
 	              errors: _this2.props.errors,
@@ -67628,6 +67633,8 @@
 	  value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -67646,64 +67653,104 @@
 
 	var _Card2 = _interopRequireDefault(_Card);
 
+	var _Auth = __webpack_require__(595);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var formStyle = {
 	  margin: "auto"
 	};
 
-	var SellForm = function SellForm(_ref) {
-	  var onChange = _ref.onChange,
-	      errors = _ref.errors,
-	      item = _ref.item;
-	  return _react2.default.createElement(
-	    _Card2.default,
-	    { className: 'container' },
-	    _react2.default.createElement(
-	      'form',
-	      { style: formStyle },
-	      _react2.default.createElement(
-	        'h2',
-	        { className: 'card-heading' },
-	        'Sell Item'
-	      ),
-	      errors.summary && _react2.default.createElement(
-	        'p',
-	        { className: 'error-message' },
-	        errors.summary
-	      ),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'field-line' },
-	        _react2.default.createElement(
-	          'p',
-	          null,
-	          _react2.default.createElement(
-	            'b',
-	            null,
-	            'Item:'
-	          ),
-	          ' ',
-	          item.name,
-	          ' ',
-	          _react2.default.createElement(
-	            'b',
-	            null,
-	            'Quantity: '
-	          ),
-	          ' ',
-	          item.quantity
-	        )
-	      )
-	    )
-	  );
-	};
+	var SellForm = function (_React$Component) {
+	  _inherits(SellForm, _React$Component);
 
-	SellForm.propTypes = {
-	  onChange: _react.PropTypes.func.isRequired,
-	  errors: _react.PropTypes.object.isRequired,
-	  item: _react.PropTypes.object.isRequired
-	};
+	  function SellForm(props) {
+	    _classCallCheck(this, SellForm);
+
+	    return _possibleConstructorReturn(this, (SellForm.__proto__ || Object.getPrototypeOf(SellForm)).call(this, props));
+	  }
+	  //Add a new Item function
+
+
+	  _createClass(SellForm, [{
+	    key: 'sellItem',
+	    value: function sellItem(event) {
+	      // prevent default action. in this case, action is the form submission event
+	      event.preventDefault();
+	      // create a string for an HTTP body message
+	      var id = encodeURIComponent(this.props.item._id);
+	      var quantity = encodeURIComponent(1);
+	      var price = encodeURIComponent(this.props.item.price);
+	      var soldItem = 'quantity=' + quantity + '&price=' + price;
+
+	      // create an AJAX request
+	      var xhr = new XMLHttpRequest();
+	      xhr.open('POST', '/api/item/' + this.props.item._id);
+	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
+	      xhr.responseType = 'json';
+	      xhr.addEventListener('load', function () {
+	        //If successfully created a item
+	        if (xhr.status === 200) {
+	          console.log('YYYAAAYYYY!!!!!!!!!!!!');
+	        } else {
+	          console.log('ERROR!!!!!!!!!!!');
+	        }
+	      });
+	      xhr.send(soldItem);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        _Card2.default,
+	        { className: 'container' },
+	        _react2.default.createElement(
+	          'form',
+	          { style: formStyle },
+	          _react2.default.createElement(
+	            'h2',
+	            { className: 'card-heading' },
+	            'Sell Item'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'field-line' },
+	            _react2.default.createElement(
+	              'p',
+	              null,
+	              _react2.default.createElement(
+	                'b',
+	                null,
+	                'Item:'
+	              ),
+	              ' ',
+	              this.props.item.name,
+	              ' ',
+	              _react2.default.createElement(
+	                'b',
+	                null,
+	                'Quantity: '
+	              ),
+	              ' ',
+	              this.props.item.quantity
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return SellForm;
+	}(_react2.default.Component);
 
 	exports.default = SellForm;
 

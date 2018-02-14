@@ -24,7 +24,8 @@ const itemSchema = new Schema({
   price:        { type: Number    , required: false,
                   default: 0                          },
 
-  itemsSold:  [ {type: Schema.Types.Mixed             } ],
+  sold:         { type: Number    , required: false,
+                  default: 0                          },
 
   user_id:      { type: Schema.Types.ObjectId,
                   required: false

@@ -9,6 +9,9 @@ import SellItemModal from '../components/SellItemModal.jsx';
 import Card from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import ChartsCard from './ChartsCard.jsx';
+import {green500 } from 'material-ui/styles/colors';
+
+
 
 //Styles
 const buttonStyle = {
@@ -195,7 +198,7 @@ class DashboardPage extends React.Component {
             handleRowSelection={this.handleRowSelection}
           />
           <RaisedButton style={buttonStyle} onClick={this.addHandleModal} label="Add"  primary />
-          <RaisedButton style={buttonStyle} onClick={this.sellHandleModal} label="Sell"  primary />
+          <RaisedButton style={buttonStyle} onClick={this.sellHandleModal} label="Sell"  backgroundColor={green500} />
 
           <AddItemModal
             handleModal={this.addHandleModal}

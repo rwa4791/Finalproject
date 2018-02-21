@@ -29,7 +29,7 @@ export default class OurBarChart extends React.Component {
        <Tooltip/>
        <Legend />
        <Bar dataKey="quantity" fill="#00bcd4" />
-       <Bar dataKey="sold" fill="#82ca9d" />
+       <Bar dataKey="sold" fill="#4CAF50" />
       </BarChart>
       </div>
     );

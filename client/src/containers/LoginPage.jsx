@@ -3,14 +3,6 @@ import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'reac
 import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm.jsx';
 
-const backgroundImg = 'https://i.ytimg.com/vi/fZF3xDld69s/maxresdefault.jpg';
-
-const divStyle ={
-  backgroundSize: 'cover',
-  backgroundImage: `url(${backgroundImg})`
-};
-
-
 class LoginPage extends React.Component {
 
 
@@ -76,7 +68,7 @@ class LoginPage extends React.Component {
         localStorage.setItem('_id', xhr.response.user.id);
 
         window.location = "/";
-        
+
       } else {
         // failure
 
@@ -113,7 +105,7 @@ class LoginPage extends React.Component {
   render() {
 
     return (
-      <div style={ divStyle }>
+      <div>
         <LoginForm
           onSubmit={this.processForm}
           onChange={this.changeUser}

@@ -2,7 +2,6 @@ import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Slider from 'material-ui/Slider';
 import { Card, CardText } from 'material-ui/Card';
-const backgroundImg = 'https://i.ytimg.com/vi/fZF3xDld69s/maxresdefault.jpg';
 
 const styles = {
   headline: {
@@ -17,11 +16,6 @@ const styles = {
   }
 };
 
-const divStyle ={
-  backgroundSize: 'cover',
-  backgroundImage: `url(${backgroundImg})`
-};
-
 
 function handleActive(tab) {
   alert(`A tab with this route property ${tab.props['data-route']} was activated.`);
@@ -30,23 +24,23 @@ function handleActive(tab) {
 const TabsExampleSimple = () => (
     <Tabs>
     <Tab label="About" >
-         <div style={ divStyle }>
+         <div>
         <Card className="container">
         <h2 style={styles.headline}>What is Inventory Assistant?</h2>
         <p style={styles.font}>
         Sale Assistant is your real time sales tracker. Sale Assistant's objective is to help the freelancer keep track of inventory, without having to pay a full time assistant.
         </p>
-        <p> 
+        <p>
         Notice which one of your products are quickly flying off the shelves, and identifiying which products might need that extra push, without having to pay a ton of money for a VP of marketing.
         </p>
         <p>
-        To get all these features and more, at a quality price, click the signup button today at the top of your screen. 
+        To get all these features and more, at a quality price, click the signup button today at the top of your screen.
         </p>
         </Card>
       </div>
     </Tab>
     <Tab label="Contact Us" >
-   <div style={ divStyle }>
+   <div>
         <Card className="container">
         <h2 style={styles.headline}>Contact Us</h2>
        <p><a href="http://www.github.com/rwa4791"> Robert Angus</a></p>
@@ -59,7 +53,7 @@ const TabsExampleSimple = () => (
         </Card>
       </div>
     </Tab>
-    
+
   </Tabs>
 );
 

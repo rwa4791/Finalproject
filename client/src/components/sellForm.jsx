@@ -44,7 +44,7 @@ export default class SellForm extends React.Component {
   }
 
   render(){
-    console.log(this.props)
+
     return(
       <Card className={'container'}>
         <form style={formStyle}>

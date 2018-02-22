@@ -198,7 +198,7 @@ class DashboardPage extends React.Component {
             handleRowSelection={this.handleRowSelection}
           />
           <RaisedButton style={buttonStyle} onClick={this.addHandleModal} label="Add"  primary />
-          <RaisedButton style={buttonStyle} onClick={this.sellHandleModal} label="Sell"  backgroundColor={green500} />
+          <RaisedButton style={buttonStyle} onClick={this.sellHandleModal} label="Sell"  secondary />
 
           <AddItemModal
             handleModal={this.addHandleModal}

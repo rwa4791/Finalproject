@@ -13,6 +13,7 @@ import LogoutPage from './containers/LogoutPage.jsx';
 import AboutPage from './containers/AboutPage.jsx';
 import Price from './containers/price.jsx';
 import Navbar from './components/Navbar.jsx'
+import Theme from './components/Theme.jsx'
 
 const backgroundImg = 'https://i.ytimg.com/vi/fZF3xDld69s/maxresdefault.jpg';
 
@@ -29,7 +30,7 @@ injectTapEventPlugin();
 ReactDom.render((
   <div style={divStyle}>
     <Router>
-      <MuiThemeProvider muiTheme={getMuiTheme()}>
+      <MuiThemeProvider muiTheme={getMuiTheme(Theme)}>
         <div>
           <Navbar />
           <Switch>

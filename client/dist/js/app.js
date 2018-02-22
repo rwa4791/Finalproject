@@ -47922,8 +47922,8 @@
 	          _react2.default.createElement(_recharts.CartesianGrid, { strokeDasharray: "3 3" }),
 	          _react2.default.createElement(_recharts.Tooltip, null),
 	          _react2.default.createElement(_recharts.Legend, null),
-	          _react2.default.createElement(_recharts.Bar, { dataKey: "quantity", fill: "#00bcd4" }),
-	          _react2.default.createElement(_recharts.Bar, { dataKey: "sold", fill: "#4CAF50" })
+	          _react2.default.createElement(_recharts.Bar, { dataKey: "quantity", fill: "#9b65bb" }),
+	          _react2.default.createElement(_recharts.Bar, { dataKey: "sold", fill: "#85bb65" })
 	        )
 	      );
 	    }

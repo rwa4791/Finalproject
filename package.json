@@ -1,7 +1,7 @@
 {
   "name": "authentication-in-react-apps",
   "version": "1.0.0",
-  "description": "Authentication in React Applications, Part 2: JSON Web Token (JWT)",
+  "description": "Inventory Assistant",
   "main": "index.js",
   "scripts": {
     "start": "nodemon --use-strict index.js",

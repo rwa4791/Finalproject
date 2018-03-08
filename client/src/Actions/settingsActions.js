@@ -1,4 +1,3 @@
-
 //Export functions
 export function updateRow(row){
   return { type: 'UPDATE_ROW', payload: row}

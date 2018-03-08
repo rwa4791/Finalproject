@@ -9,17 +9,29 @@ import SellItemModal from '../components/SellItemModal.jsx';
 import Card from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import ChartsCard from './ChartsCard.jsx';
-import {green500 } from 'material-ui/styles/colors';
-
-
+import { connect } from 'react-redux';
+import { fetchItems } from '../actions/itemsActions';
+import axios from 'axios';
 
 //Styles
 const buttonStyle = {
   margin: 5,
 };
 
-// Comtainer
-class DashboardPage extends React.Component {
+@connect((store) => {
+  return{
+    _id: store.users._id,
+    itemArray: store.items.itemArray,
+    erros: store.items.errors,
+    row: store.items.row,
+    item: store.items.item,
+    secretData: store.settings.secretData,
+    openAddItem: store.settings.openAddItem,
+    openSellItem: store.settings.openSellItem,
+
+  }
+})
+export default class DashboardPage extends React.Component {
 
   /**
    * Class constructor.
@@ -27,21 +39,6 @@ class DashboardPage extends React.Component {
   constructor(props,context) {
     super(props, context);
 
-    this.state = {
-      _id: localStorage.getItem('_id'),
-      itemArray: [],
-      row: '',
-      secretData: '',
-      errors: {},
-      openAddItem: false,
-      openSellItem: false,
-      item: {
-        name: '',
-        description: '',
-        quantity: '',
-        price: '',
-      },
-    };
     //Bind function to this component
     this.processForm = this.processForm.bind(this);
     this.changeItem = this.changeItem.bind(this);
@@ -56,11 +53,11 @@ class DashboardPage extends React.Component {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
     // create a string for an HTTP body message
-    const name = encodeURIComponent(this.state.item.name);
-    const description = encodeURIComponent(this.state.item.description);
-    const quantity = encodeURIComponent(this.state.item.quantity);
-    const price = encodeURIComponent(this.state.item.price);
-    const user_id = encodeURIComponent(this.state._id);
+    const name = encodeURIComponent(this.props.item.name);
+    const description = encodeURIComponent(this.props.item.description);
+    const quantity = encodeURIComponent(this.props.item.quantity);
+    const price = encodeURIComponent(this.props.item.price);
+    const user_id = encodeURIComponent(this.props._id);
     const itemData = `name=${name}&description=${description}&quantity=${quantity}&price=${price}&user_id=${user_id}`;
 
     //Clear form
@@ -138,20 +135,9 @@ class DashboardPage extends React.Component {
    * This method will be executed after initial rendering.
    */
   componentDidMount() {
-    const userData = `user_id=${this.state._id}`;
-    // create an AJAX request
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', `/api/item/user/${this.state._id}`);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', () => {
-      this.setState({
-        itemArray: xhr.response
-      });
-    });
-    xhr.send(userData);
-  }
+    //Get user Items
+    this.props.dispatch(fetchItems(this.props._id));
+  };
   addHandleOpen() {
     this.setState({openAddItem: true});
   };
@@ -161,7 +147,7 @@ class DashboardPage extends React.Component {
   };
   addHandleModal(event){
     event.preventDefault();
-    if(this.state.openAddItem ) {
+    if(this.props.openAddItem ) {
       this.addHandleClose();
     }else {
       this.addHandleOpen();
@@ -190,11 +176,11 @@ class DashboardPage extends React.Component {
       <div>
         <Card className='container'>
           <h2 className="card-heading">Inventory</h2>
-          <ChartsCard itemArray={this.state.itemArray}/>
+          <ChartsCard itemArray={this.props.itemArray}/>
         </Card>
         <Card className='container'>
           <ItemTable
-            itemArray={this.state.itemArray}
+            itemArray={this.props.itemArray}
             handleRowSelection={this.handleRowSelection}
           />
           <RaisedButton style={buttonStyle} onClick={this.addHandleModal} label="Add"  primary />
@@ -202,20 +188,20 @@ class DashboardPage extends React.Component {
 
           <AddItemModal
             handleModal={this.addHandleModal}
-            open={this.state.openAddItem}
+            open={this.props.openAddItem}
             onSubmit={this.processForm}
             onChange={this.changeItem}
-            errors={this.state.errors}
-            item={this.state.item}
+            errors={this.props.errors}
+            item={this.props.item}
           />
           <SellItemModal
-            itemArray={this.state.itemArray}
-            row={this.state.row}
+            itemArray={this.props.itemArray}
+            row={this.props.row}
             handleModal={this.sellHandleModal}
-            open={this.state.openSellItem}
+            open={this.props.openSellItem}
             onChange={this.changeItem}
             updateItemArray={this.updateItemArray}
-            errors={this.state.errors}
+            errors={this.props.errors}
           />
         </Card>
       </div>
@@ -223,5 +209,3 @@ class DashboardPage extends React.Component {
   }
 
 }
-
-export default DashboardPage;

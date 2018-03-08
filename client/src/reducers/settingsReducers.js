@@ -3,6 +3,7 @@ export default function reducer ( state ={
   row : '',
   secretData: '',
   errors: {},
+  successMessage: '',
   openAddItem: false,
   openSellItem: false
 }, action ) {

@@ -3,6 +3,7 @@ import {AppBar, FlatButton, IconButton} from 'material-ui';
 import Auth from '../modules/Auth';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 const appBarTitleStyle={
   textAlign: "left"
 }
@@ -15,17 +16,15 @@ const flatButtonStyle = {
   margin: 10,
   color: 'white'
 }
+
 @connect((store)=>{
   return{
     auth: store.settings.authenticated
   }
 })
-
 export default class Navbar extends React.Component{
   render(){
-
     return(
-
       <AppBar titleStyle={appBarTitleStyle} showMenuIconButton={false} title={<span style={styles.title}>Inventory Assistant</span>}>
         {
           this.props.auth ?
@@ -38,7 +37,11 @@ export default class Navbar extends React.Component{
                 <FlatButton
                   label="SIGN OUT"
                   style={flatButtonStyle}
-                  containerElement={<Link to="/logout"/>}
+                  onClick={()=>{
+                    this.props.dispatch({type: 'UPDATE_AUTHENTICATED'});
+                    Auth.deauthenticateUser();
+                    window.location = "/";
+                  }}
                   />
               </div>
             </div>

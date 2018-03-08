@@ -62,10 +62,10 @@ const ItemForm = ({
 </Card>
 );
 
-ItemForm.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
-  item: PropTypes.object.isRequired
-};
+// ItemForm.propTypes = {
+//   onChange: PropTypes.func.isRequired,
+//   errors: PropTypes.object.isRequired,
+//   item: PropTypes.object.isRequired
+// };
 
 export default ItemForm;

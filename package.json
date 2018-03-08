@@ -14,6 +14,7 @@
   "author": "Hector Candelaria, Robert Angus, Christian Vasquez",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.18.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.15.2",

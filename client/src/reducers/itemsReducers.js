@@ -1,6 +1,9 @@
 //Export items Reducers
 export default function reducer( state = {
-  items: [],
+  fetching: false,
+  fetched: false,
+  itemArray: [],
+  row: '',
   errors: {},
   item: {
     name: '',
@@ -18,15 +21,30 @@ export default function reducer( state = {
       return{ ...state, item: action.payload}
     }
     case 'FETCH_ITEMS_FULFILLED' : {
-      return { ...state, items: action.payload }
+      return {
+        ...state,
+        itemArray: action.payload,
+        fetching: false,
+        fetched: true
+     }
     }
     case 'FETCH_ITEMS_ERROR' : {
-      return { ...state, errors: action.payload }
+      return {
+        ...state,
+        errors: action.payload,
+        fetching: false
+      }
     }
     case 'ADD_ITEM' : {
       return {
         ...state,
-        items: items.concat(action.payload)
+        itemArray: items.concat(action.payload)
+      }
+    }
+    case 'FETCH_ITEMS_START' :{
+      return{
+        ...state,
+        fetching: true,
       }
     }
     default: {

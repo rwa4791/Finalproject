@@ -7,7 +7,14 @@ import AboutPage from './AboutPage.jsx';
 import Price from './price.jsx';
 import DashboardPage from './DashboardPage.jsx';
 import PageNotfound from './PageNotfound.jsx';
+import { connect } from 'react-redux';
 
+@connect((store)=>{
+  return{
+    auth: store.settings.authenticated
+
+  }
+})
 export default class Navbar extends React.Component{
 
   render(){

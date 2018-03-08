@@ -4,6 +4,7 @@ import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm.jsx';
 import { connect } from 'react-redux';
 import { fetchUser, changeUser } from '../actions/usersActions'
+import axios from 'axios';
 
 @connect((store)=>{
   return{
@@ -42,7 +43,12 @@ export default class LoginPage extends React.Component {
   processForm(event) {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
-    this.props.dispatch(fetchUser(this.state.user.email, this.state.user.password));
+    // formData to send
+    const email = encodeURIComponent(this.props.user.email);
+    const password = encodeURIComponent(this.props.user.password);
+    const formData = `email=${email}&password=${password}`;
+    // Send a POST request
+    this.props.dispatch(fetchUser(formData));
 
   }
 

@@ -33,6 +33,7 @@ export default function reducer ( state ={
       return {
         ...state,
         user: action.payload,
+        _id: action.payload._id,
         fetching: false,
         fetched: true
      }

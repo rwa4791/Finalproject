@@ -23,15 +23,15 @@ injectTapEventPlugin();
 
 ReactDom.render((
   <Provider store={store}>
-    <div style={divStyle}>
       <Router>
+        <div style={divStyle}>
         <MuiThemeProvider muiTheme={getMuiTheme(Theme)}>
           <div>
             <Navbar />
             <PageRouter />
           </div>
         </MuiThemeProvider>
-      </Router>
-    </div>
+      </div>
+    </Router>
   </Provider>
 ), document.getElementById('react-app'));

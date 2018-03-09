@@ -30,7 +30,6 @@ export default class Navbar extends React.Component{
           this.props.auth ?
           (
             <div>
-
               <Redirect to="/dashboard" push />
 
               <div className="top-bar-right">

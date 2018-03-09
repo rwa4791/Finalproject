@@ -135,7 +135,19 @@ export default class DashboardPage extends React.Component {
    */
   componentDidMount() {
     //Get user Items
-    this.props.dispatch(fetchItems(this.props._id));
+    if(this.props._id !== null){
+      this.props.dispatch(fetchItems(this.props._id));
+    }else if (localStorage.getItem('_id') && Auth.getToken()){
+      this.props.dispatch({type: 'UPDATE_ID', payload: localStorage.getItem('_id')});
+
+      Promise.resolve(this.props.dispatch({type: 'UPDATE_AUTHENTICATED'}))
+        .then( () =>{
+          this.props.dispatch(fetchItems(this.props._id));
+        })
+    }else{
+      alert('Please log in!');
+      window.location = '/';
+    }
   };
 
   addHandleModal(event){

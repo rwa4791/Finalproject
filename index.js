@@ -7,6 +7,8 @@ const db = require("./server/models");
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/inventoryAssistant";
 const mongoose = require('mongoose');
 
+const path = require('path');
+
 // Set up promises with mongoose
 mongoose.Promise = global.Promise;
 // Connect to the Mongo DB
@@ -37,10 +39,13 @@ app.use('/api', authCheckMiddleware);
 // routes
 const authRoutes = require('./server/routes/auth');
 const apiRoutes = require('./server/routes/api');
+
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 
-
+app.get('/*', function (req, res) {
+   res.sendFile(path.join(__dirname, 'server/static', 'index.html'));
+});
 // start the server
 app.listen(PORT, () => {
   console.log('Server is running on http://localhost:3000 or http://127.0.0.1:3000');

@@ -1,4 +1,5 @@
 const path = require('path');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 module.exports = {
@@ -9,8 +10,13 @@ module.exports = {
   output: {
     path: path.join(__dirname, '/client/dist/js'),
     filename: 'app.js',
+    publicPath: '/'
   },
-
+  devServer: {
+    historyApiFallback: true,
+    contentBase: './',
+    hot: true
+  },
   module: {
 
     // apply loaders to files that meet given conditions
@@ -24,7 +30,6 @@ module.exports = {
       }
     }],
   },
-
   // start Webpack in a watch mode, so Webpack will rebuild the bundle on changes
   watch: true
 };

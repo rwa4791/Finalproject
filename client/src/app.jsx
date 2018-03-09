@@ -3,9 +3,9 @@ import ReactDom from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Navbar from './components/Navbar.jsx'
-import Theme from './components/Theme.jsx'
-import { BrowserRouter as Router } from 'react-router-dom'
+import Navbar from './components/Navbar.jsx';
+import Theme from './components/Theme.jsx';
+import { BrowserRouter as Router, Route, } from 'react-router-dom';
 import PageRouter from './containers/PageRouter.jsx';
 import { Provider } from 'react-redux';
 import store from './store';

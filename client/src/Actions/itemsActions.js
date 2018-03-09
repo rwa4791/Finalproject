@@ -30,12 +30,10 @@ export function addItem(item) {
   return { type: 'ADD_ITEM', payload: item }
 }
 
-export function itemHandler(value,field) {
-  return {
-    type: 'UPDATE_ITEM',
-    payload: {
-      value,
-      field
-    }
+export function changeItem(event,item) {
+  return function(dispatch){
+    const field = event.target.name;
+    user[field] = event.target.value;
+    dispatch({type: 'UPDATE_ITEM', payload: user})
   }
 }

@@ -1,5 +1,5 @@
 import React  from 'react';
-import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-router-dom'
+import { Route, Link, Switch, Redirect } from 'react-router-dom'
 import LoginPage from './LoginPage.jsx';
 import SignUpPage from './SignUpPage.jsx';
 import LogoutPage from './LogoutPage.jsx';
@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 @connect((store)=>{
   return{
     auth: store.settings.authenticated
-
   }
 })
 export default class Navbar extends React.Component{

@@ -22,13 +22,12 @@ const buttonStyle = {
   return{
     _id: store.users._id,
     itemArray: store.items.itemArray,
-    erros: store.items.errors,
+    errors: store.items.errors,
     row: store.items.row,
     item: store.items.item,
     secretData: store.settings.secretData,
     openAddItem: store.settings.openAddItem,
     openSellItem: store.settings.openSellItem,
-
   }
 })
 export default class DashboardPage extends React.Component {
@@ -138,20 +137,10 @@ export default class DashboardPage extends React.Component {
     //Get user Items
     this.props.dispatch(fetchItems(this.props._id));
   };
-  addHandleOpen() {
-    this.setState({openAddItem: true});
-  };
 
-  addHandleClose() {
-    this.setState({openAddItem: false});
-  };
   addHandleModal(event){
     event.preventDefault();
-    if(this.props.openAddItem ) {
-      this.addHandleClose();
-    }else {
-      this.addHandleOpen();
-    }
+    this.props.dispatch({type: 'UPDATE_MODAL_ADDITEM'})
   }
   sellHandleOpen() {
     this.setState({openSellItem: true});

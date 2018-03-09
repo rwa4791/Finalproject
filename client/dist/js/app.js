@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -68731,7 +68731,6 @@
 	var Navbar = (_dec = (0, _reactRedux.connect)(function (store) {
 	  return {
 	    auth: store.settings.authenticated
-
 	  };
 	}), _dec(_class = function (_React$Component) {
 	  _inherits(Navbar, _React$Component);
@@ -71340,13 +71339,12 @@
 	  return {
 	    _id: store.users._id,
 	    itemArray: store.items.itemArray,
-	    erros: store.items.errors,
+	    errors: store.items.errors,
 	    row: store.items.row,
 	    item: store.items.item,
 	    secretData: store.settings.secretData,
 	    openAddItem: store.settings.openAddItem,
 	    openSellItem: store.settings.openSellItem
-
 	  };
 	}), _dec(_class = function (_React$Component) {
 	  _inherits(DashboardPage, _React$Component);
@@ -71480,24 +71478,10 @@
 	      this.props.dispatch((0, _itemsActions.fetchItems)(this.props._id));
 	    }
 	  }, {
-	    key: 'addHandleOpen',
-	    value: function addHandleOpen() {
-	      this.setState({ openAddItem: true });
-	    }
-	  }, {
-	    key: 'addHandleClose',
-	    value: function addHandleClose() {
-	      this.setState({ openAddItem: false });
-	    }
-	  }, {
 	    key: 'addHandleModal',
 	    value: function addHandleModal(event) {
 	      event.preventDefault();
-	      if (this.props.openAddItem) {
-	        this.addHandleClose();
-	      } else {
-	        this.addHandleOpen();
-	      }
+	      this.props.dispatch({ type: 'UPDATE_MODAL_ADDITEM' });
 	    }
 	  }, {
 	    key: 'sellHandleOpen',
@@ -71721,12 +71705,6 @@
 	    )
 	  );
 	};
-
-	// ItemForm.propTypes = {
-	//   onChange: PropTypes.func.isRequired,
-	//   errors: PropTypes.object.isRequired,
-	//   item: PropTypes.object.isRequired
-	// };
 
 	exports.default = ItemForm;
 
@@ -106875,7 +106853,7 @@
 	});
 	exports.fetchItems = fetchItems;
 	exports.addItem = addItem;
-	exports.itemHandler = itemHandler;
+	exports.changeItem = changeItem;
 
 	var _axios = __webpack_require__(645);
 
@@ -106915,13 +106893,11 @@
 	  return { type: 'ADD_ITEM', payload: item };
 	}
 
-	function itemHandler(value, field) {
-	  return {
-	    type: 'UPDATE_ITEM',
-	    payload: {
-	      value: value,
-	      field: field
-	    }
+	function changeItem(event, item) {
+	  return function (dispatch) {
+	    var field = event.target.name;
+	    user[field] = event.target.value;
+	    dispatch({ type: 'UPDATE_ITEM', payload: user });
 	  };
 	}
 
@@ -106943,83 +106919,16 @@
 
 	var _Card = __webpack_require__(429);
 
-	var _RaisedButton = __webpack_require__(498);
-
-	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
-	var _TextField = __webpack_require__(392);
-
-	var _TextField2 = _interopRequireDefault(_TextField);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var img404 = './img/Bat-Signal-404.png';
 
 	var PageNotfound = function PageNotfound() {
 	  return _react2.default.createElement(
-	    _Card.Card,
+	    'div',
 	    { className: 'container' },
-	    _react2.default.createElement(
-	      'form',
-	      { action: '/', onSubmit: onSubmit },
-	      _react2.default.createElement(
-	        'h2',
-	        { className: 'card-heading' },
-	        'Sign Up'
-	      ),
-	      errors.summary && _react2.default.createElement(
-	        'p',
-	        { className: 'error-message' },
-	        errors.summary
-	      ),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'field-line' },
-	        _react2.default.createElement(_TextField2.default, {
-	          floatingLabelText: 'Name',
-	          name: 'name',
-	          errorText: errors.name,
-	          onChange: onChange,
-	          value: user.name
-	        })
-	      ),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'field-line' },
-	        _react2.default.createElement(_TextField2.default, {
-	          floatingLabelText: 'Email',
-	          name: 'email',
-	          errorText: errors.email,
-	          onChange: onChange,
-	          value: user.email
-	        })
-	      ),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'field-line' },
-	        _react2.default.createElement(_TextField2.default, {
-	          floatingLabelText: 'Password',
-	          type: 'password',
-	          name: 'password',
-	          onChange: onChange,
-	          errorText: errors.password,
-	          value: user.password
-	        })
-	      ),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'button-line' },
-	        _react2.default.createElement(_RaisedButton2.default, { type: 'submit', label: 'Create New Account', primary: true })
-	      ),
-	      _react2.default.createElement(
-	        _Card.CardText,
-	        null,
-	        'Already have an account? ',
-	        _react2.default.createElement(
-	          _reactRouterDom.Link,
-	          { to: '/' },
-	          'Log in'
-	        )
-	      )
-	    )
+	    _react2.default.createElement('br', null),
+	    _react2.default.createElement('img', { src: img404, className: 'responsive-img' })
 	  );
 	};
 

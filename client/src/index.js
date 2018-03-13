@@ -12,6 +12,7 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger'
 import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
+import { composeWithDevTools } from 'redux-devtools-extension';
 // History
 import createHistory from 'history/createBrowserHistory';
 //  Reducers
@@ -35,7 +36,7 @@ const historyMiddleware = routerMiddleware(history);
 const middleware = applyMiddleware(promise(), historyMiddleware, logger, thunk);
 
 //create store
-const store = createStore(reducer, middleware);
+const store = createStore(reducer, composeWithDevTools(middleware));
 
 ReactDOM.render((
   <Provider store={store}>

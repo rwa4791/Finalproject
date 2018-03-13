@@ -1,14 +1,11 @@
-import React, { PropTypes, Component } from 'react';
-import ReactDom from 'react-dom';
+import React, { Component } from 'react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Navbar from './components/Navbar.jsx';
 import Theme from './components/Theme.jsx';
-import { BrowserRouter as Router, Route, } from 'react-router-dom';
 import PageRouter from './containers/PageRouter.jsx';
-import { Provider } from 'react-redux';
-import store from './store';
+
 const backgroundImg = './img/background.jpg';
 
 const divStyle ={
@@ -21,10 +18,12 @@ const divStyle ={
 // remove tap delay, essential for MaterialUI to work properly
 injectTapEventPlugin();
 
-ReactDom.render((
-  <Provider store={store}>
-      <Router>
-        <div style={divStyle}>
+export default class App extends Component {
+
+  render() {
+
+    return(
+      <div style={divStyle}>
         <MuiThemeProvider muiTheme={getMuiTheme(Theme)}>
           <div>
             <Navbar />
@@ -32,6 +31,6 @@ ReactDom.render((
           </div>
         </MuiThemeProvider>
       </div>
-    </Router>
-  </Provider>
-), document.getElementById('react-app'));
+    )
+  }
+}

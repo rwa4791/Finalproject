@@ -1,5 +1,5 @@
 import React  from 'react';
-import { Route, Link, Switch, Redirect } from 'react-router-dom'
+import {BrowserRouter as Router, Route, Switch, IndexRoute, Link} from 'react-router-dom';
 import LoginPage from './LoginPage.jsx';
 import SignUpPage from './SignUpPage.jsx';
 import LogoutPage from './LogoutPage.jsx';
@@ -11,7 +11,8 @@ import { connect } from 'react-redux';
 
 @connect((store)=>{
   return{
-    auth: store.settings.authenticated
+    auth: store.settings.authenticated,
+    url: store.router.location.pathname,
   }
 })
 export default class Navbar extends React.Component{
@@ -19,7 +20,7 @@ export default class Navbar extends React.Component{
   render(){
     return(
         <Switch>
-          <Route exact path="/" component={LoginPage}/>
+          <Route exact path="/" component={LoginPage} />
           <Route exact path="/signup" component={SignUpPage}/>
           <Route exact path="/dashboard" component={DashboardPage}/>
           <Route exact path="/logout" component={LogoutPage}/>

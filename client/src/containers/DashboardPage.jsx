@@ -12,6 +12,7 @@ import ChartsCard from './ChartsCard.jsx';
 import { connect } from 'react-redux';
 import { fetchItems } from '../actions/itemsActions';
 import axios from 'axios';
+import { push } from 'react-router-redux'
 
 //Styles
 const buttonStyle = {
@@ -121,7 +122,7 @@ export default class DashboardPage extends React.Component {
       row: ''
     })
     if(selectedRows === 'all'){
-      console.log('HELLO');
+      console.log('selected all rows');
     }else{
       //Add Item to itemsChecked
       this.setState(previousState => ({
@@ -135,10 +136,10 @@ export default class DashboardPage extends React.Component {
    */
   componentDidMount() {
     //Get user Items
-    if(this.props._id !== null){
+    if(this.props._id !== ''){
       this.props.dispatch(fetchItems(this.props._id));
     }else if (localStorage.getItem('_id') && Auth.getToken()){
-      this.props.dispatch({type: 'UPDATE_ID', payload: localStorage.getItem('_id')});
+      this.props.dispatch({type: 'UPDATE_ID',  payload: localStorage.getItem('_id')});
 
       Promise.resolve(this.props.dispatch({type: 'UPDATE_AUTHENTICATED'}))
         .then( () =>{
@@ -146,7 +147,7 @@ export default class DashboardPage extends React.Component {
         })
     }else{
       alert('Please log in!');
-      window.location = '/';
+      this.props.dispatch(push('/'));
     }
   };
 

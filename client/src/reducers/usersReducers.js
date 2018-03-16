@@ -1,8 +1,9 @@
 export default function reducer ( state ={
   fetching: true,
   fetched: false,
+  login: {},
   user: {},
-  _id: null,
+  _id: '',
   errors: {}
 }, action ) {
 
@@ -10,8 +11,8 @@ export default function reducer ( state ={
     case 'UPDATE_ID' : {
       return {...state, _id: action.payload}
     }
-    case 'UPDATE_USER' : {
-      return {...state, user: action.payload}
+    case 'UPDATE_LOGIN' : {
+      return {...state, login: action.payload}
     }
     case 'USER_ERROR' : {
       return {...state, errors: action.payload }
@@ -33,7 +34,7 @@ export default function reducer ( state ={
       return {
         ...state,
         user: action.payload,
-        _id: action.payload._id,
+        _id: action.payload.id,
         fetching: false,
         fetched: true
      }

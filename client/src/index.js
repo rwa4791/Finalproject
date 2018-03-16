@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 //  Redux
 import { applyMiddleware, createStore } from 'redux';
-import { ConnectedRouter as Router, routerMiddleware } from 'react-router-redux';
+import { ConnectedRouter as Router, routerMiddleware, push } from 'react-router-redux';
 import { Provider } from 'react-redux';
 //  Middleware
 import { createLogger } from 'redux-logger'

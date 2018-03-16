@@ -3,15 +3,19 @@ import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'reac
 import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm.jsx';
 import { connect } from 'react-redux';
-import { fetchUser, changeUser } from '../actions/usersActions'
+import { fetchUser, changeLogin } from '../actions/usersActions'
 import axios from 'axios';
+import RaisedButton from 'material-ui/RaisedButton';
+import { push } from 'react-router-redux';
 
 @connect((store)=>{
   return{
     auth: store.settings.authenticated,
+    successMessage: store.settings.successMessage,
     _id: store.users._id,
     errors: store.users.errors,
-    user: store.users.user
+    user: store.users.user,
+    login: store.users.login,
   }
 })
 export default class LoginPage extends React.Component {
@@ -32,7 +36,7 @@ export default class LoginPage extends React.Component {
     }
 
     this.processForm = this.processForm.bind(this);
-    this.changeUser = this.changeUser.bind(this);
+    this.changeUser = this.changeLogin.bind(this);
   }
 
   /**
@@ -44,11 +48,18 @@ export default class LoginPage extends React.Component {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
     // formData to send
-    const email = encodeURIComponent(this.props.user.email);
-    const password = encodeURIComponent(this.props.user.password);
+    const email = encodeURIComponent(this.props.login.email);
+    const password = encodeURIComponent(this.props.login.password);
     const formData = `email=${email}&password=${password}`;
+
+    //Clear LoginForm
+    this.props.dispatch({
+      type:"UPDATE_LOGIN",
+      payload: {}
+    })
     // Send a POST request
-    this.props.dispatch(fetchUser(formData));
+
+    this.props.dispatch(fetchUser(formData))
 
   }
 
@@ -57,13 +68,13 @@ export default class LoginPage extends React.Component {
    *
    * @param {object} event - the JavaScript event object
    */
-  changeUser(event) {
+  changeLogin(event) {
     event.preventDefault();
-    this.props.dispatch(changeUser(event, this.props.user))
+    this.props.dispatch(changeLogin(event, this.props.login))
   }
   componentDidMount() {
     if(Auth.getToken()!== null){
-      this.props.dispatch({type: 'UPDATE_AUTHENTICATED'})
+      this.props.dispatch(push('/dashboard'))
     }
   }
   /**
@@ -77,7 +88,7 @@ export default class LoginPage extends React.Component {
           onChange={this.changeUser}
           errors={this.props.errors}
           successMessage={this.props.successMessage}
-          user={this.props.user}
+          login={this.props.login}
         />
       </div>
     );

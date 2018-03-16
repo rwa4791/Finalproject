@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import { connect } from 'react-redux';
 
 
 const LoginForm = ({
@@ -10,7 +11,7 @@ const LoginForm = ({
   onChange,
   errors,
   successMessage,
-  user
+  login,
 }) => (
   <Card className="container">
     <form action="/" onSubmit={onSubmit}>
@@ -25,7 +26,7 @@ const LoginForm = ({
           name="email"
           errorText={errors.email}
           onChange={onChange}
-          value={user.email}
+          value={login.email}
         />
       </div>
 
@@ -36,7 +37,7 @@ const LoginForm = ({
           name="password"
           onChange={onChange}
           errorText={errors.password}
-          value={user.password}
+          value={login.password}
         />
       </div>
 

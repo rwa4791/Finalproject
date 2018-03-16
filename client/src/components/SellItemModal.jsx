@@ -17,7 +17,6 @@ export default class SellitemModal extends React.Component {
   //Class constructor
   constructor(props){
     super(props);
-    console.log(props);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleItemArray = this.handleItemArray.bind(this);
   }

@@ -13,13 +13,8 @@ const itemsController = require("../controllers/itemsController");
 //     )
 // }
 
-
-router.get('/dashboard', (req, res) => {
-  res.status(200).json(res);
-});
-
-
 router.post('/item', (req, res) => {
+  console.log(req.body);
   itemsController.create(req,res)
 });
 router.get('/item/user/:id', (req,res) => {

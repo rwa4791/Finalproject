@@ -6,11 +6,17 @@ import RaisedButton from 'material-ui/RaisedButton';
 import ItemForm from '../components/ItemForm.jsx';
 import Card from 'material-ui/Card';
 import blue900 from 'material-ui/styles/colors';
+import { connect } from 'react-redux';
 
+//CSS
 const divStyle={
   backgroundColor: blue900
 }
-
+@connect((store) => {
+  return{
+    item: store.items.item,
+  }
+})
 export default class AddItemModal extends React.Component {
 
   //Class constructor

@@ -28369,16 +28369,12 @@
 	function reducer() {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
 	    fetching: false,
+	    creatingItem: false,
 	    fetched: false,
 	    itemArray: [],
 	    row: '',
 	    errors: {},
-	    item: {
-	      name: '',
-	      description: '',
-	      quantity: '',
-	      price: ''
-	    }
+	    item: {}
 	  };
 	  var action = arguments[1];
 
@@ -28406,10 +28402,23 @@
 	          fetching: false
 	        });
 	      }
-	    case 'ADD_ITEM':
+	    case 'CREATING_ITEM':
 	      {
 	        return _extends({}, state, {
-	          itemArray: items.concat(action.payload)
+	          creatingItem: false
+	        });
+	      }
+	    case 'CREATING_ITEM_START':
+	      {
+	        return _extends({}, state, {
+	          creatingItem: true
+	        });
+	      }
+	    case 'CREATING_ITEM_ERROR':
+	      {
+	        return _extends({}, state, {
+	          errors: action.payload,
+	          creatingItem: false
 	        });
 	      }
 	    case 'FETCH_ITEMS_START':
@@ -75069,8 +75078,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -75132,41 +75139,21 @@
 	      var user_id = encodeURIComponent(this.props._id);
 	      var itemData = 'name=' + name + '&description=' + description + '&quantity=' + quantity + '&price=' + price + '&user_id=' + user_id;
 
-	      //Clear form
-	      this.setState({
-	        item: {
-	          name: '',
-	          description: '',
-	          quantity: '',
-	          price: ''
-	        }
+	      //Clear Item
+	      //Clear LoginForm
+	      this.props.dispatch({
+	        type: "UPDATE_ITEM",
+	        payload: {}
 	      });
 
-	      // create an AJAX request
-	      var xhr = new XMLHttpRequest();
-	      xhr.open('POST', '/api/item');
-	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
-	      xhr.responseType = 'json';
-	      xhr.addEventListener('load', function () {
-	        //If successfully created a item
-	        if (xhr.status === 200) {
-	          var resItem = {
-	            name: xhr.response.name,
-	            description: xhr.response.description,
-	            quantity: xhr.response.quantity,
-	            price: xhr.response.price,
-	            sold: xhr.response.sold
-	          };
-	          //Push response to itemArray
-	          _this2.setState(function (previousState) {
-	            return {
-	              itemArray: [].concat(_toConsumableArray(previousState.itemArray), [resItem])
-	            };
-	          });
-	        }
+	      //Create new item
+	      Promise.resolve(this.props.dispatch((0, _itemsActions.createItem)(itemData))).then(function () {
+	        //Then reload all items
+	        _this2.props.dispatch((0, _itemsActions.fetchItems)(_this2.props._id));
+	      }).catch(function (err) {
+	        //Warring any errors
+	        console.log('WARRING!!!', err);
 	      });
-	      xhr.send(itemData);
 	    }
 
 	    /**
@@ -75178,13 +75165,8 @@
 	  }, {
 	    key: 'changeItem',
 	    value: function changeItem(event) {
-	      var field = event.target.name;
-	      var item = this.state.item;
-	      item[field] = event.target.value;
-
-	      this.setState({
-	        item: item
-	      });
+	      event.preventDefault();
+	      this.props.dispatch((0, _itemsActions.changeItem)(event, this.props.item));
 	    }
 	  }, {
 	    key: 'updateItemArray',
@@ -75199,19 +75181,14 @@
 	  }, {
 	    key: 'handleRowSelection',
 	    value: function handleRowSelection(selectedRows) {
-	      //Empety itemsChecked Array
-	      this.setState({
-	        row: ''
-	      });
+	      //Empety row
+	      this.props.dispatch({ type: 'UPDATE_ROW', payload: '' });
+
 	      if (selectedRows === 'all') {
-	        console.log('selected all rows');
+	        console.log('WARRING! YOU selected all rows this function is not available');
 	      } else {
 	        //Add Item to itemsChecked
-	        this.setState(function (previousState) {
-	          return {
-	            row: selectedRows[0]
-	          };
-	        });
+	        this.props.dispatch({ type: 'UPDATE_ROW', payload: selectedRows[0] });
 	      }
 	    }
 	    /**
@@ -75244,31 +75221,18 @@
 	      this.props.dispatch({ type: 'UPDATE_MODAL_ADDITEM' });
 	    }
 	  }, {
-	    key: 'sellHandleOpen',
-	    value: function sellHandleOpen() {
-	      this.setState({ openSellItem: true });
-	    }
-	  }, {
-	    key: 'sellHandleClose',
-	    value: function sellHandleClose() {
-	      this.setState({ openSellItem: false });
-	    }
-	  }, {
 	    key: 'sellHandleModal',
 	    value: function sellHandleModal(event) {
 	      event.preventDefault();
-	      if (this.state.openSellItem) {
-	        this.sellHandleClose();
-	      } else {
-	        this.sellHandleOpen();
-	      }
+	      this.props.dispatch({ type: 'UPDATE_MODAL_SELLITEM' });
 	    }
+	  }, {
+	    key: 'render',
+
+
 	    /**
 	     * Render the component.
 	     */
-
-	  }, {
-	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
@@ -75297,8 +75261,7 @@
 	            open: this.props.openAddItem,
 	            onSubmit: this.processForm,
 	            onChange: this.changeItem,
-	            errors: this.props.errors,
-	            item: this.props.item
+	            errors: this.props.errors
 	          }),
 	          _react2.default.createElement(_SellItemModal2.default, {
 	            itemArray: this.props.itemArray,
@@ -75614,6 +75577,9 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _dec, _class; //Import packages
+
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -75642,20 +75608,25 @@
 
 	var _colors2 = _interopRequireDefault(_colors);
 
+	var _reactRedux = __webpack_require__(237);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //Import packages
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-
+	//CSS
 	var divStyle = {
 	  backgroundColor: _colors2.default
 	};
-
-	var AddItemModal = function (_React$Component) {
+	var AddItemModal = (_dec = (0, _reactRedux.connect)(function (store) {
+	  return {
+	    item: store.items.item
+	  };
+	}), _dec(_class = function (_React$Component) {
 	  _inherits(AddItemModal, _React$Component);
 
 	  //Class constructor
@@ -75707,8 +75678,7 @@
 	  }]);
 
 	  return AddItemModal;
-	}(_react2.default.Component);
-
+	}(_react2.default.Component)) || _class);
 	exports.default = AddItemModal;
 
 /***/ }),
@@ -75778,7 +75748,6 @@
 
 	    var _this = _possibleConstructorReturn(this, (SellitemModal.__proto__ || Object.getPrototypeOf(SellitemModal)).call(this, props));
 
-	    console.log(props);
 	    _this.handleSubmit = _this.handleSubmit.bind(_this);
 	    _this.handleItemArray = _this.handleItemArray.bind(_this);
 	    return _this;
@@ -110612,6 +110581,7 @@
 	  value: true
 	});
 	exports.fetchItems = fetchItems;
+	exports.createItem = createItem;
 	exports.addItem = addItem;
 	exports.changeItem = changeItem;
 
@@ -110648,16 +110618,38 @@
 	    });
 	  };
 	}
+	function createItem(itemData) {
+	  return function (dispatch) {
+	    dispatch({ type: 'CREATING_ITEM_START' });
 
+	    var authOptions = {
+	      method: 'POST',
+	      url: '/api/item',
+	      headers: {
+	        'Authorization': 'bearer ' + _Auth2.default.getToken(),
+	        'Content-Type': 'application/x-www-form-urlencoded'
+	      },
+	      json: true,
+	      data: itemData
+	    };
+
+	    (0, _axios2.default)(authOptions).then(function (res) {
+	      dispatch({ type: 'CREATING_ITEM', payload: res.data });
+	    }).catch(function (err) {
+	      dispatch({ type: 'CREATING_ITEM_ERROR', payload: err });
+	    });
+	  };
+	}
 	function addItem(item) {
 	  return { type: 'ADD_ITEM', payload: item };
 	}
 
 	function changeItem(event, item) {
 	  return function (dispatch) {
+	    console.log(item);
 	    var field = event.target.name;
-	    user[field] = event.target.value;
-	    dispatch({ type: 'UPDATE_ITEM', payload: user });
+	    item[field] = event.target.value;
+	    dispatch({ type: 'UPDATE_ITEM', payload: item });
 	  };
 	}
 

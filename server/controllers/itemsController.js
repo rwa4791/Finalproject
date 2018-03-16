@@ -22,9 +22,7 @@ function itemUpdateSoldItem (soldItem, id) {
       { new : true}
     )
 }
-function updateQuantity (req, res) {
 
-}
 // Defining methods for the ItemsController
 module.exports = {
   findAll: function(req, res) {

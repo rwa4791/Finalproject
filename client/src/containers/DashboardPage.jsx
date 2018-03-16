@@ -10,7 +10,7 @@ import Card from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import ChartsCard from './ChartsCard.jsx';
 import { connect } from 'react-redux';
-import { fetchItems } from '../actions/itemsActions';
+import { fetchItems, createItem, changeItem } from '../actions/itemsActions';
 import axios from 'axios';
 import { push } from 'react-router-redux'
 
@@ -60,39 +60,22 @@ export default class DashboardPage extends React.Component {
     const user_id = encodeURIComponent(this.props._id);
     const itemData = `name=${name}&description=${description}&quantity=${quantity}&price=${price}&user_id=${user_id}`;
 
-    //Clear form
-    this.setState({
-      item: {
-        name: '',
-        description: '',
-        quantity: '',
-        price: '',
-      }
+    //Clear Item
+    //Clear LoginForm
+    this.props.dispatch({
+      type:"UPDATE_ITEM",
+      payload: {}
     })
 
-    // create an AJAX request
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/api/item');
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', () => {
-      //If successfully created a item
-      if (xhr.status === 200) {
-        let resItem = {
-          name: xhr.response.name,
-          description: xhr.response.description,
-          quantity: xhr.response.quantity,
-          price: xhr.response.price,
-          sold: xhr.response.sold
-        };
-      //Push response to itemArray
-        this.setState(previousState => ({
-          itemArray: [...previousState.itemArray, resItem]
-        }));
-      }
-    });
-    xhr.send(itemData);
+    //Create new item
+    Promise.resolve(this.props.dispatch(createItem(itemData)))
+      .then( () =>{
+        //Then reload all items
+        this.props.dispatch(fetchItems(this.props._id));
+      }).catch( (err) =>{
+        //Warring any errors
+        console.log('WARRING!!!', err);
+      })
   }
 
   /**
@@ -101,13 +84,8 @@ export default class DashboardPage extends React.Component {
    * @param {object} event - the JavaScript event object
    */
   changeItem(event) {
-    const field = event.target.name;
-    const item = this.state.item;
-    item[field] = event.target.value;
-
-    this.setState({
-      item
-    });
+    event.preventDefault();
+    this.props.dispatch(changeItem(event, this.props.item))
   }
   updateItemArray(itemArray) {
     console.log(itemArray)
@@ -117,17 +95,14 @@ export default class DashboardPage extends React.Component {
   }
   //Add checked item to itemsChecked
   handleRowSelection( selectedRows ){
-    //Empety itemsChecked Array
-    this.setState({
-      row: ''
-    })
+    //Empety row
+    this.props.dispatch({type: 'UPDATE_ROW', payload: ''})
+
     if(selectedRows === 'all'){
-      console.log('selected all rows');
+      console.log('WARRING! YOU selected all rows this function is not available');
     }else{
       //Add Item to itemsChecked
-      this.setState(previousState => ({
-        row: selectedRows[0]
-      }))
+      this.props.dispatch({type: 'UPDATE_ROW', payload: selectedRows[0]})
     }
 
   }
@@ -155,21 +130,11 @@ export default class DashboardPage extends React.Component {
     event.preventDefault();
     this.props.dispatch({type: 'UPDATE_MODAL_ADDITEM'})
   }
-  sellHandleOpen() {
-    this.setState({openSellItem: true});
+  sellHandleModal(event) {
+    event.preventDefault();
+    this.props.dispatch({type: 'UPDATE_MODAL_SELLITEM'})
   };
 
-  sellHandleClose() {
-    this.setState({openSellItem: false});
-  };
-  sellHandleModal(event){
-    event.preventDefault();
-    if(this.state.openSellItem ) {
-      this.sellHandleClose();
-    }else {
-      this.sellHandleOpen();
-    }
-  }
   /**
    * Render the component.
    */
@@ -194,7 +159,6 @@ export default class DashboardPage extends React.Component {
             onSubmit={this.processForm}
             onChange={this.changeItem}
             errors={this.props.errors}
-            item={this.props.item}
           />
           <SellItemModal
             itemArray={this.props.itemArray}

@@ -1,15 +1,12 @@
 //Export items Reducers
 export default function reducer( state = {
   fetching: false,
+  creatingItem: false,
   fetched: false,
   itemArray: [],
   row: '',
   errors: {},
   item: {
-    name: '',
-    description: '',
-    quantity: '',
-    price: '',
   }
 }, action ) {
 
@@ -35,10 +32,23 @@ export default function reducer( state = {
         fetching: false
       }
     }
-    case 'ADD_ITEM' : {
+    case 'CREATING_ITEM' : {
       return {
         ...state,
-        itemArray: items.concat(action.payload)
+        creatingItem: false
+      }
+    }
+    case 'CREATING_ITEM_START' : {
+      return {
+        ...state,
+        creatingItem: true,
+      }
+    }
+    case 'CREATING_ITEM_ERROR' : {
+      return {
+        ...state,
+        errors: action.payload,
+        creatingItem: false
       }
     }
     case 'FETCH_ITEMS_START' :{

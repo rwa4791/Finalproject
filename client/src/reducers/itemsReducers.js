@@ -2,9 +2,9 @@
 export default function reducer( state = {
   fetching: false,
   creatingItem: false,
+  sellingItem: false,
   fetched: false,
   itemArray: [],
-  row: '',
   errors: {},
   item: {
   }
@@ -32,7 +32,7 @@ export default function reducer( state = {
         fetching: false
       }
     }
-    case 'CREATING_ITEM' : {
+    case 'CREATING_ITEM_FULFILLED' : {
       return {
         ...state,
         creatingItem: false
@@ -51,10 +51,29 @@ export default function reducer( state = {
         creatingItem: false
       }
     }
-    case 'FETCH_ITEMS_START' :{
+    case 'FETCH_ITEMS_START' : {
       return{
         ...state,
         fetching: true,
+      }
+    }
+    case 'SELLING_ITEM_START' : {
+      return{
+        ...state,
+        sellingItem: true
+      }
+    }
+    case 'SELLING_ITEM_ERROR' : {
+      return{
+        ...state,
+        errors: action.payload,
+        sellingItem: false,
+      }
+    }
+    case 'SELLING_ITEM_FULFILLED' : {
+      return{
+        ...state,
+        sellingItem: false,
       }
     }
     default: {

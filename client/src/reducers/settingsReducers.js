@@ -23,7 +23,7 @@ export default function reducer ( state ={
       }
     }
     case 'UPDATE_MODAL_SELLITEM' : {
-      if( state.openAddItem === false){
+      if( state.openSellItem === false){
         return {...state, openSellItem: true}
       }else {
         return {...state, openSellItem: false}

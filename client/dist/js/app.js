@@ -28370,9 +28370,9 @@
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
 	    fetching: false,
 	    creatingItem: false,
+	    sellingItem: false,
 	    fetched: false,
 	    itemArray: [],
-	    row: '',
 	    errors: {},
 	    item: {}
 	  };
@@ -28402,7 +28402,7 @@
 	          fetching: false
 	        });
 	      }
-	    case 'CREATING_ITEM':
+	    case 'CREATING_ITEM_FULFILLED':
 	      {
 	        return _extends({}, state, {
 	          creatingItem: false
@@ -28425,6 +28425,25 @@
 	      {
 	        return _extends({}, state, {
 	          fetching: true
+	        });
+	      }
+	    case 'SELLING_ITEM_START':
+	      {
+	        return _extends({}, state, {
+	          sellingItem: true
+	        });
+	      }
+	    case 'SELLING_ITEM_ERROR':
+	      {
+	        return _extends({}, state, {
+	          errors: action.payload,
+	          sellingItem: false
+	        });
+	      }
+	    case 'SELLING_ITEM_FULFILLED':
+	      {
+	        return _extends({}, state, {
+	          sellingItem: false
 	        });
 	      }
 	    default:
@@ -28479,7 +28498,7 @@
 	      }
 	    case 'UPDATE_MODAL_SELLITEM':
 	      {
-	        if (state.openAddItem === false) {
+	        if (state.openSellItem === false) {
 	          return _extends({}, state, { openSellItem: true });
 	        } else {
 	          return _extends({}, state, { openSellItem: false });
@@ -75094,7 +75113,7 @@
 	    _id: store.users._id,
 	    itemArray: store.items.itemArray,
 	    errors: store.items.errors,
-	    row: store.items.row,
+	    row: store.settings.row,
 	    item: store.items.item,
 	    secretData: store.settings.secretData,
 	    openAddItem: store.settings.openAddItem,
@@ -75117,7 +75136,7 @@
 	    _this.addHandleModal = _this.addHandleModal.bind(_this);
 	    _this.sellHandleModal = _this.sellHandleModal.bind(_this);
 	    _this.handleRowSelection = _this.handleRowSelection.bind(_this);
-	    _this.updateItemArray = _this.updateItemArray.bind(_this);
+	    _this.sellItem = _this.sellItem.bind(_this);
 
 	    return _this;
 	  }
@@ -75168,14 +75187,7 @@
 	      event.preventDefault();
 	      this.props.dispatch((0, _itemsActions.changeItem)(event, this.props.item));
 	    }
-	  }, {
-	    key: 'updateItemArray',
-	    value: function updateItemArray(itemArray) {
-	      console.log(itemArray);
-	      this.setState({
-	        itemArray: itemArray
-	      });
-	    }
+
 	    //Add checked item to itemsChecked
 
 	  }, {
@@ -75186,8 +75198,10 @@
 
 	      if (selectedRows === 'all') {
 	        console.log('WARRING! YOU selected all rows this function is not available');
-	      } else {
+	      } else if (selectedRows.length === 0) {
 	        //Add Item to itemsChecked
+	        this.props.dispatch({ type: 'UPDATE_ROW', payload: '' });
+	      } else {
 	        this.props.dispatch({ type: 'UPDATE_ROW', payload: selectedRows[0] });
 	      }
 	    }
@@ -75213,6 +75227,26 @@
 	        alert('Please log in!');
 	        this.props.dispatch((0, _reactRouterRedux.push)('/'));
 	      }
+	    }
+	  }, {
+	    key: 'sellItem',
+	    value: function sellItem(item) {
+	      var _this4 = this;
+
+	      // const id = encodeURIComponent(item._id);
+	      var id = item._id;
+	      var quantity = encodeURIComponent(1);
+	      var price = encodeURIComponent(item.price);
+	      var soldItem = 'quantity=' + quantity + '&price=' + price;
+
+	      Promise.resolve(this.props.dispatch((0, _itemsActions.sellItem)(soldItem, id))).then(function () {
+	        //Then reload all items
+	        console.log('hello');
+	        _this4.props.dispatch((0, _itemsActions.fetchItems)(_this4.props._id));
+	      }).catch(function (err) {
+	        //Warring any errors
+	        console.log('WARRING!!!', err);
+	      });
 	    }
 	  }, {
 	    key: 'addHandleModal',
@@ -75254,8 +75288,17 @@
 	            itemArray: this.props.itemArray,
 	            handleRowSelection: this.handleRowSelection
 	          }),
-	          _react2.default.createElement(_RaisedButton2.default, { style: buttonStyle, onClick: this.addHandleModal, label: 'Add', primary: true }),
-	          _react2.default.createElement(_RaisedButton2.default, { style: buttonStyle, onClick: this.sellHandleModal, label: 'Sell', secondary: true }),
+	          _react2.default.createElement(_RaisedButton2.default, {
+	            style: buttonStyle,
+	            onClick: this.addHandleModal,
+	            label: 'Add',
+	            primary: true }),
+	          _react2.default.createElement(_RaisedButton2.default, {
+	            style: buttonStyle,
+	            onClick: this.sellHandleModal, label: 'Sell',
+	            secondary: true,
+	            disabled: this.props.row === ''
+	          }),
 	          _react2.default.createElement(_AddItemModal2.default, {
 	            handleModal: this.addHandleModal,
 	            open: this.props.openAddItem,
@@ -75264,13 +75307,12 @@
 	            errors: this.props.errors
 	          }),
 	          _react2.default.createElement(_SellItemModal2.default, {
-	            itemArray: this.props.itemArray,
+	            item: this.props.itemArray[this.props.row],
 	            row: this.props.row,
 	            handleModal: this.sellHandleModal,
 	            open: this.props.openSellItem,
-	            onChange: this.changeItem,
-	            updateItemArray: this.updateItemArray,
-	            errors: this.props.errors
+	            errors: this.props.errors,
+	            onSubmit: this.sellItem
 	          })
 	        )
 	      );
@@ -75749,29 +75791,14 @@
 	    var _this = _possibleConstructorReturn(this, (SellitemModal.__proto__ || Object.getPrototypeOf(SellitemModal)).call(this, props));
 
 	    _this.handleSubmit = _this.handleSubmit.bind(_this);
-	    _this.handleItemArray = _this.handleItemArray.bind(_this);
 	    return _this;
 	  }
 
 	  _createClass(SellitemModal, [{
-	    key: 'handleItemArray',
-	    value: function handleItemArray(newItem) {
-	      var tempArray = this.props.itemArray;
-	      for (var i = 0; i < tempArray.length; i++) {
-	        if (i === this.props.row) {
-	          tempArray[i] = newItem;
-	        }
-	        console.log(tempArray[i]);
-	      }
-
-	      console.log(tempArray);
-	      this.props.updateItemArray(tempArray);
-	    }
-	  }, {
 	    key: 'handleSubmit',
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
-	      this.refs.itemSold.sellItem(event);
+	      this.props.onSubmit(this.props.item);
 	      this.props.handleModal(event);
 	    }
 	  }, {
@@ -75797,11 +75824,9 @@
 	            open: this.props.open
 	          },
 	          _react2.default.createElement(_SellForm2.default, {
-	            ref: 'itemSold',
 	            onChange: this.props.onChange,
 	            errors: this.props.errors,
-	            item: this.props.itemArray[this.props.row],
-	            handleItemArray: this.handleItemArray
+	            item: this.props.item
 	          })
 	        )
 	      );
@@ -110582,6 +110607,7 @@
 	});
 	exports.fetchItems = fetchItems;
 	exports.createItem = createItem;
+	exports.sellItem = sellItem;
 	exports.addItem = addItem;
 	exports.changeItem = changeItem;
 
@@ -110601,7 +110627,7 @@
 	  return function (dispatch) {
 	    dispatch({ type: 'FETCH_ITEMS_START' });
 
-	    var authOptions = {
+	    var authReq = {
 	      method: 'GET',
 	      url: '/api/item/user/' + id,
 	      headers: {
@@ -110611,7 +110637,7 @@
 	      json: true
 	    };
 
-	    (0, _axios2.default)(authOptions).then(function (res) {
+	    (0, _axios2.default)(authReq).then(function (res) {
 	      dispatch({ type: 'FETCH_ITEMS_FULFILLED', payload: res.data });
 	    }).catch(function (err) {
 	      dispatch({ type: 'FETCH_ITEMS_ERROR', payload: err });
@@ -110620,9 +110646,11 @@
 	}
 	function createItem(itemData) {
 	  return function (dispatch) {
-	    dispatch({ type: 'CREATING_ITEM_START' });
+	    dispatch({ type: 'UPDATE_ITEM_START' });
 
-	    var authOptions = {
+	    console.log(itemData);
+
+	    var authReq = {
 	      method: 'POST',
 	      url: '/api/item',
 	      headers: {
@@ -110633,13 +110661,38 @@
 	      data: itemData
 	    };
 
-	    (0, _axios2.default)(authOptions).then(function (res) {
-	      dispatch({ type: 'CREATING_ITEM', payload: res.data });
+	    (0, _axios2.default)(authReq).then(function (res) {
+	      dispatch({ type: 'CREATING_ITEM_FULFILLED', payload: res.data });
 	    }).catch(function (err) {
 	      dispatch({ type: 'CREATING_ITEM_ERROR', payload: err });
 	    });
 	  };
 	}
+	function sellItem(itemData, id) {
+	  return function (dispatch) {
+	    dispatch({ type: 'SELLING_ITEM_START' });
+
+	    console.log(itemData);
+	    console.log(id);
+	    var authReq = {
+	      method: 'POST',
+	      url: '/api/item/' + id,
+	      headers: {
+	        'Authorization': 'bearer ' + _Auth2.default.getToken(),
+	        'Content-Type': 'application/x-www-form-urlencoded'
+	      },
+	      json: true,
+	      data: itemData
+	    };
+
+	    (0, _axios2.default)(authReq).then(function (res) {
+	      dispatch({ type: 'SELLING_ITEM_FULFILLED', payload: res.data });
+	    }).catch(function (err) {
+	      dispatch({ type: 'SELLING_ITEM_ERROR', payload: err });
+	    });
+	  };
+	}
+
 	function addItem(item) {
 	  return { type: 'ADD_ITEM', payload: item };
 	}

@@ -10,7 +10,7 @@ import Card from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import ChartsCard from './ChartsCard.jsx';
 import { connect } from 'react-redux';
-import { fetchItems, createItem, changeItem } from '../actions/itemsActions';
+import { fetchItems, createItem, changeItem, sellItem } from '../actions/itemsActions';
 import axios from 'axios';
 import { push } from 'react-router-redux'
 
@@ -24,7 +24,7 @@ const buttonStyle = {
     _id: store.users._id,
     itemArray: store.items.itemArray,
     errors: store.items.errors,
-    row: store.items.row,
+    row: store.settings.row,
     item: store.items.item,
     secretData: store.settings.secretData,
     openAddItem: store.settings.openAddItem,
@@ -45,7 +45,7 @@ export default class DashboardPage extends React.Component {
     this.addHandleModal = this.addHandleModal.bind(this);
     this.sellHandleModal = this.sellHandleModal.bind(this);
     this.handleRowSelection = this.handleRowSelection.bind(this);
-    this.updateItemArray = this.updateItemArray.bind(this);
+    this.sellItem = this.sellItem.bind(this);
 
   }
   //Add a new Item function
@@ -87,12 +87,7 @@ export default class DashboardPage extends React.Component {
     event.preventDefault();
     this.props.dispatch(changeItem(event, this.props.item))
   }
-  updateItemArray(itemArray) {
-    console.log(itemArray)
-    this.setState({
-      itemArray: itemArray
-    });
-  }
+
   //Add checked item to itemsChecked
   handleRowSelection( selectedRows ){
     //Empety row
@@ -100,8 +95,10 @@ export default class DashboardPage extends React.Component {
 
     if(selectedRows === 'all'){
       console.log('WARRING! YOU selected all rows this function is not available');
-    }else{
+    }else if (selectedRows.length === 0){
       //Add Item to itemsChecked
+      this.props.dispatch({type: 'UPDATE_ROW', payload: ''})
+    }else{
       this.props.dispatch({type: 'UPDATE_ROW', payload: selectedRows[0]})
     }
 
@@ -125,7 +122,24 @@ export default class DashboardPage extends React.Component {
       this.props.dispatch(push('/'));
     }
   };
+  sellItem(item){
+    // const id = encodeURIComponent(item._id);
+    const id = item._id
+    const quantity = encodeURIComponent(1);
+    const price = encodeURIComponent(item.price);
+    const soldItem = `quantity=${quantity}&price=${price}`;
 
+    Promise.resolve(this.props.dispatch(sellItem(soldItem, id)))
+      .then( () =>{
+        //Then reload all items
+        console.log('hello');
+        this.props.dispatch(fetchItems(this.props._id));
+      }).catch( (err) =>{
+        //Warring any errors
+        console.log('WARRING!!!', err);
+      })
+
+  }
   addHandleModal(event){
     event.preventDefault();
     this.props.dispatch({type: 'UPDATE_MODAL_ADDITEM'})
@@ -150,8 +164,17 @@ export default class DashboardPage extends React.Component {
             itemArray={this.props.itemArray}
             handleRowSelection={this.handleRowSelection}
           />
-          <RaisedButton style={buttonStyle} onClick={this.addHandleModal} label="Add"  primary />
-          <RaisedButton style={buttonStyle} onClick={this.sellHandleModal} label="Sell"  secondary />
+          <RaisedButton
+            style={buttonStyle}
+            onClick={this.addHandleModal}
+            label="Add"
+            primary />
+          <RaisedButton
+            style={buttonStyle}
+            onClick={this.sellHandleModal} label="Sell"
+            secondary
+            disabled={this.props.row === ''}
+            />
 
           <AddItemModal
             handleModal={this.addHandleModal}
@@ -161,13 +184,12 @@ export default class DashboardPage extends React.Component {
             errors={this.props.errors}
           />
           <SellItemModal
-            itemArray={this.props.itemArray}
+            item={this.props.itemArray[this.props.row]}
             row={this.props.row}
             handleModal={this.sellHandleModal}
             open={this.props.openSellItem}
-            onChange={this.changeItem}
-            updateItemArray={this.updateItemArray}
             errors={this.props.errors}
+            onSubmit={this.sellItem}
           />
         </Card>
       </div>

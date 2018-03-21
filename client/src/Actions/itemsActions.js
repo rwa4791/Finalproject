@@ -6,7 +6,7 @@ export function fetchItems(id){
   return function(dispatch) {
     dispatch({type: 'FETCH_ITEMS_START'})
 
-    var authOptions = {
+    var authReq = {
       method: 'GET',
       url: `/api/item/user/${id}`,
       headers: {
@@ -16,7 +16,7 @@ export function fetchItems(id){
       json: true
     };
 
-    axios(authOptions)
+    axios(authReq)
       .then((res) => {
         dispatch({type: 'FETCH_ITEMS_FULFILLED', payload: res.data})
       })
@@ -27,9 +27,11 @@ export function fetchItems(id){
 }
 export function createItem( itemData ){
   return function( dispatch ) {
-    dispatch({type: 'CREATING_ITEM_START'})
+    dispatch({type: 'UPDATE_ITEM_START'})
 
-    var authOptions = {
+    console.log(itemData)
+
+    var authReq = {
       method: 'POST',
       url: '/api/item',
       headers: {
@@ -40,15 +42,43 @@ export function createItem( itemData ){
       data: itemData
     };
 
-    axios(authOptions)
+    axios(authReq)
       .then( (res) => {
-        dispatch({type: 'CREATING_ITEM', payload: res.data})
+        dispatch({type: 'CREATING_ITEM_FULFILLED', payload: res.data})
       })
       .catch((err) => {
         dispatch({type: 'CREATING_ITEM_ERROR', payload: err})
       })
   }
 }
+export function sellItem( itemData, id) {
+  return function( dispatch ) {
+    dispatch({type: 'SELLING_ITEM_START'})
+
+    console.log(itemData);
+    console.log(id);
+    var authReq = {
+      method: 'POST',
+      url: `/api/item/${id}`,
+      headers: {
+        'Authorization': `bearer ${Auth.getToken()}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      json: true,
+      data: itemData
+    }
+
+    axios(authReq)
+      .then( (res) => {
+        dispatch({type: 'SELLING_ITEM_FULFILLED', payload: res.data})
+      })
+      .catch((err) =>{
+        dispatch({type: 'SELLING_ITEM_ERROR', payload: err})
+      })
+
+  }
+}
+
 export function addItem(item) {
   return { type: 'ADD_ITEM', payload: item }
 }

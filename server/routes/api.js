@@ -24,5 +24,11 @@ router.get('/item/user/:id', (req,res) => {
 router.post('/item/:id', (req,res) => {
   itemsController.sellItem(req,res);
 })
+router.put('/item/:id', (req,res) => {
+  itemsController.update(req,res);
+})
+router.delete('/item/:id', (req, res) =>{
+  itemsController.remove(req,res);
+})
 
 module.exports = router;

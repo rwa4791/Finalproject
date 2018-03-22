@@ -6,7 +6,7 @@ export function fetchItems(id){
   return function(dispatch) {
     dispatch({type: 'FETCH_ITEMS_START'})
 
-    var authReq = {
+    let authReq = {
       method: 'GET',
       url: `/api/item/user/${id}`,
       headers: {
@@ -31,7 +31,7 @@ export function createItem( itemData ){
 
     console.log(itemData)
 
-    var authReq = {
+    let authReq = {
       method: 'POST',
       url: '/api/item',
       headers: {
@@ -55,9 +55,7 @@ export function sellItem( itemData, id) {
   return function( dispatch ) {
     dispatch({type: 'SELLING_ITEM_START'})
 
-    console.log(itemData);
-    console.log(id);
-    var authReq = {
+    let authReq = {
       method: 'POST',
       url: `/api/item/${id}`,
       headers: {
@@ -78,14 +76,60 @@ export function sellItem( itemData, id) {
 
   }
 }
+export function updateItem( itemData, id) {
+  return function( dispatch ) {
+    dispatch({type: 'UPDATING_ITEM_START'})
 
+    let authReq = {
+      method: 'PUT',
+      url: `/api/item/${id}`,
+      headers: {
+        'Authorization': `bearer ${Auth.getToken()}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      json: true,
+      data: itemData
+    }
+
+    axios(authReq)
+      .then( (res) => {
+        dispatch({type: 'UPDATING_ITEM_FULFILLED', payload: res.data})
+      })
+      .catch((err) =>{
+        dispatch({type: 'UPDATING_ITEM_ERROR', payload: err})
+      })
+
+  }
+}
+export function deleteItem(id){
+  return function( dispatch ) {
+    dispatch({type: 'DELETING_ITEM_START'})
+
+    let authReq = {
+      method: 'DELETE',
+      url: `/api/item/${id}`,
+      headers: {
+        'Authorization': `bearer ${Auth.getToken()}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      json: true,
+    }
+    axios(authReq)
+      .then( (res) => {
+        dispatch({type: 'DELETING_ITEM_FULFILLED', payload: res.data})
+      })
+      .catch((err) =>{
+        dispatch({type: 'DELETING_ITEM_ERROR', payload: err})
+      })
+
+  }
+}
 export function addItem(item) {
   return { type: 'ADD_ITEM', payload: item }
 }
 
 export function changeItem(event, item) {
   return function(dispatch){
-    console.log(item)
     const field = event.target.name;
     item[field] = event.target.value;
     dispatch({type: 'UPDATE_ITEM', payload: item})

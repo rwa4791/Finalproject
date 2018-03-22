@@ -28371,6 +28371,8 @@
 	    fetching: false,
 	    creatingItem: false,
 	    sellingItem: false,
+	    updatingItem: false,
+	    deletingItem: false,
 	    fetched: false,
 	    itemArray: [],
 	    errors: {},
@@ -28446,6 +28448,44 @@
 	          sellingItem: false
 	        });
 	      }
+	    case 'UPDATING_ITEM_START':
+	      {
+	        return _extends({}, state, {
+	          updatingItem: true
+	        });
+	      }
+	    case 'UPDATING_ITEM_ERROR':
+	      {
+	        return _extends({}, state, {
+	          errors: action.payload,
+	          updatingItem: false
+	        });
+	      }
+	    case 'UPDATING_ITEM_FULFILLED':
+	      {
+	        return _extends({}, state, {
+	          updatingItem: false
+	        });
+	      }
+	    case 'DELETING_ITEM_START':
+	      {
+	        return _extends({}, state, {
+	          deletingItem: true
+	        });
+	      }
+	    case 'DELETING_ITEM_ERROR':
+	      {
+	        return _extends({}, state, {
+	          errors: action.payload,
+	          deletingItem: false
+	        });
+	      }
+	    case 'DELETING_ITEM_FULFILLED':
+	      {
+	        return _extends({}, state, {
+	          deletingItem: false
+	        });
+	      }
 	    default:
 	      {
 	        return state;
@@ -28474,7 +28514,9 @@
 	    errors: {},
 	    successMessage: '',
 	    openAddItem: false,
-	    openSellItem: false
+	    openSellItem: false,
+	    openUpdateItem: false,
+	    openDeleteItem: false
 	  };
 	  var action = arguments[1];
 
@@ -28502,6 +28544,22 @@
 	          return _extends({}, state, { openSellItem: true });
 	        } else {
 	          return _extends({}, state, { openSellItem: false });
+	        }
+	      }
+	    case 'UPDATE_MODAL_UPDATEITEM':
+	      {
+	        if (state.openUpdateItem === false) {
+	          return _extends({}, state, { openUpdateItem: true });
+	        } else {
+	          return _extends({}, state, { openUpdateItem: false });
+	        }
+	      }
+	    case 'UPDATE_MODAL_DELETEITEM':
+	      {
+	        if (state.openDeleteItem === false) {
+	          return _extends({}, state, { openDeleteItem: true });
+	        } else {
+	          return _extends({}, state, { openDeleteItem: false });
 	        }
 	      }
 	    case 'SETTING_ERRORS':
@@ -72461,7 +72519,7 @@
 
 	var _DashboardPage2 = _interopRequireDefault(_DashboardPage);
 
-	var _PageNotfound = __webpack_require__(1035);
+	var _PageNotfound = __webpack_require__(1038);
 
 	var _PageNotfound2 = _interopRequireDefault(_PageNotfound);
 
@@ -75042,7 +75100,12 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _dec, _class; //Import packages
+	var _dec, _class; //  Import packages
+
+
+	//  Import Component
+
+	//  Import Actions
 
 
 	var _react = __webpack_require__(1);
@@ -75052,6 +75115,14 @@
 	var _Auth = __webpack_require__(642);
 
 	var _Auth2 = _interopRequireDefault(_Auth);
+
+	var _axios = __webpack_require__(682);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	var _reactRouterRedux = __webpack_require__(204);
+
+	var _reactRedux = __webpack_require__(237);
 
 	var _Dashboard = __webpack_require__(716);
 
@@ -75085,15 +75156,17 @@
 
 	var _ChartsCard2 = _interopRequireDefault(_ChartsCard);
 
-	var _reactRedux = __webpack_require__(237);
+	var _colors = __webpack_require__(337);
 
-	var _itemsActions = __webpack_require__(1034);
+	var _DeleteItemModal = __webpack_require__(1034);
 
-	var _axios = __webpack_require__(682);
+	var _DeleteItemModal2 = _interopRequireDefault(_DeleteItemModal);
 
-	var _axios2 = _interopRequireDefault(_axios);
+	var _UpdateItemModal = __webpack_require__(1035);
 
-	var _reactRouterRedux = __webpack_require__(204);
+	var _UpdateItemModal2 = _interopRequireDefault(_UpdateItemModal);
+
+	var _itemsActions = __webpack_require__(1037);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -75107,7 +75180,7 @@
 	var buttonStyle = {
 	  margin: 5
 	};
-
+	//Connect to redux store
 	var DashboardPage = (_dec = (0, _reactRedux.connect)(function (store) {
 	  return {
 	    _id: store.users._id,
@@ -75117,7 +75190,9 @@
 	    item: store.items.item,
 	    secretData: store.settings.secretData,
 	    openAddItem: store.settings.openAddItem,
-	    openSellItem: store.settings.openSellItem
+	    openSellItem: store.settings.openSellItem,
+	    openUpdateItem: store.settings.openUpdateItem,
+	    openDeleteItem: store.settings.openDeleteItem
 	  };
 	}), _dec(_class = function (_React$Component) {
 	  _inherits(DashboardPage, _React$Component);
@@ -75128,24 +75203,30 @@
 	  function DashboardPage(props, context) {
 	    _classCallCheck(this, DashboardPage);
 
-	    //Bind function to this component
+	    //  Bind function to this component
 	    var _this = _possibleConstructorReturn(this, (DashboardPage.__proto__ || Object.getPrototypeOf(DashboardPage)).call(this, props, context));
 
-	    _this.processForm = _this.processForm.bind(_this);
+	    _this.addItem = _this.addItem.bind(_this);
+	    _this.sellItem = _this.sellItem.bind(_this);
+	    _this.updateItem = _this.updateItem.bind(_this);
+	    _this.deleteItem = _this.deleteItem.bind(_this);
 	    _this.changeItem = _this.changeItem.bind(_this);
+	    //  Bind handle modal
 	    _this.addHandleModal = _this.addHandleModal.bind(_this);
 	    _this.sellHandleModal = _this.sellHandleModal.bind(_this);
+	    _this.updateHandleModal = _this.updateHandleModal.bind(_this);
+	    _this.deleteHandleModal = _this.deleteHandleModal.bind(_this);
 	    _this.handleRowSelection = _this.handleRowSelection.bind(_this);
-	    _this.sellItem = _this.sellItem.bind(_this);
 
 	    return _this;
 	  }
+
 	  //Add a new Item function
 
 
 	  _createClass(DashboardPage, [{
-	    key: 'processForm',
-	    value: function processForm(event) {
+	    key: 'addItem',
+	    value: function addItem(event) {
 	      var _this2 = this;
 
 	      // prevent default action. in this case, action is the form submission event
@@ -75159,7 +75240,6 @@
 	      var itemData = 'name=' + name + '&description=' + description + '&quantity=' + quantity + '&price=' + price + '&user_id=' + user_id;
 
 	      //Clear Item
-	      //Clear LoginForm
 	      this.props.dispatch({
 	        type: "UPDATE_ITEM",
 	        payload: {}
@@ -75174,12 +75254,71 @@
 	        console.log('WARRING!!!', err);
 	      });
 	    }
+	    //  Sell Item function
 
-	    /**
-	     * Change the Item object.
-	     *
-	     * @param {object} event - the JavaScript event object
-	     */
+	  }, {
+	    key: 'sellItem',
+	    value: function sellItem(item) {
+	      var _this3 = this;
+
+	      var id = item._id;
+	      var quantity = encodeURIComponent(1);
+	      var price = encodeURIComponent(item.price);
+	      var soldItem = 'quantity=' + quantity + '&price=' + price;
+
+	      Promise.resolve(this.props.dispatch((0, _itemsActions.sellItem)(soldItem, id))).then(function () {
+	        //Then reload all items
+	        _this3.props.dispatch((0, _itemsActions.fetchItems)(_this3.props._id));
+	      }).catch(function (err) {
+	        //Warring any errors
+	        console.log('WARRING!!!', err);
+	      });
+	    }
+	    //  Update Item function
+
+	  }, {
+	    key: 'updateItem',
+	    value: function updateItem(item) {
+	      var _this4 = this;
+
+	      var id = item._id;
+	      var name = item.name;
+	      var quantity = item.quantity;
+	      var price = item.price;
+	      var description = item.description;
+
+	      var itemData = 'name=' + name + '&quantity=' + quantity + '&price=' + price + '&description=' + description;
+	      Promise.resolve(this.props.dispatch((0, _itemsActions.updateItem)(itemData, id))).then(function () {
+	        //Then reload all items
+	        _this4.props.dispatch((0, _itemsActions.fetchItems)(_this4.props._id));
+	      }).catch(function (err) {
+	        //Warring any errors
+	        console.log('WARRING!!!', err);
+	      });
+	    }
+	    //  Delete Item function
+
+	  }, {
+	    key: 'deleteItem',
+	    value: function deleteItem(item) {
+	      var _this5 = this;
+
+	      console.log('DELETING ITEM!!');
+	      var id = item = item._id;
+
+	      Promise.resolve(this.props.dispatch((0, _itemsActions.deleteItem)(id))).then(function () {
+	        //  Then reload all items
+	        _this5.props.dispatch((0, _itemsActions.fetchItems)(_this5.props._id));
+	        //  Clear item
+	        _this5.props.dispatch({ type: 'UPDATE_ITEM', payload: {} });
+	        //  Clear row
+	        _this5.props.dispatch({ type: 'UPDATE_ROW', payload: '' });
+	      }).catch(function (err) {
+	        //Warring any errors
+	        console.log('WARRING!!!', err);
+	      });
+	    }
+	    // Item text handler
 
 	  }, {
 	    key: 'changeItem',
@@ -75188,21 +75327,44 @@
 	      this.props.dispatch((0, _itemsActions.changeItem)(event, this.props.item));
 	    }
 
-	    //Add checked item to itemsChecked
+	    //  Select a row
 
 	  }, {
 	    key: 'handleRowSelection',
 	    value: function handleRowSelection(selectedRows) {
-	      //Empety row
+	      //  Clear row
 	      this.props.dispatch({ type: 'UPDATE_ROW', payload: '' });
+	      //  Clear item
+	      this.props.dispatch({
+	        type: "UPDATE_ITEM",
+	        payload: {}
+	      });
 
 	      if (selectedRows === 'all') {
 	        console.log('WARRING! YOU selected all rows this function is not available');
 	      } else if (selectedRows.length === 0) {
 	        //Add Item to itemsChecked
 	        this.props.dispatch({ type: 'UPDATE_ROW', payload: '' });
+	        //  Clear item
+	        this.props.dispatch({
+	          type: "UPDATE_ITEM",
+	          payload: {}
+	        });
 	      } else {
+	        var tempItem = this.props.itemArray[selectedRows[0]];
+	        var item = {
+	          _id: tempItem._id,
+	          name: tempItem.name,
+	          quantity: tempItem.quantity,
+	          price: tempItem.price,
+	          soldItem: tempItem.soldItem,
+	          description: tempItem.description
+	        };
 	        this.props.dispatch({ type: 'UPDATE_ROW', payload: selectedRows[0] });
+	        this.props.dispatch({
+	          type: "UPDATE_ITEM",
+	          payload: item
+	        });
 	      }
 	    }
 	    /**
@@ -75212,7 +75374,7 @@
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this3 = this;
+	      var _this6 = this;
 
 	      //Get user Items
 	      if (this.props._id !== '') {
@@ -75221,7 +75383,7 @@
 	        this.props.dispatch({ type: 'UPDATE_ID', payload: localStorage.getItem('_id') });
 
 	        Promise.resolve(this.props.dispatch({ type: 'UPDATE_AUTHENTICATED' })).then(function () {
-	          _this3.props.dispatch((0, _itemsActions.fetchItems)(_this3.props._id));
+	          _this6.props.dispatch((0, _itemsActions.fetchItems)(_this6.props._id));
 	        });
 	      } else {
 	        alert('Please log in!');
@@ -75229,44 +75391,69 @@
 	      }
 	    }
 	  }, {
-	    key: 'sellItem',
-	    value: function sellItem(item) {
-	      var _this4 = this;
+	    key: 'sellButtonValidation',
 
-	      // const id = encodeURIComponent(item._id);
-	      var id = item._id;
-	      var quantity = encodeURIComponent(1);
-	      var price = encodeURIComponent(item.price);
-	      var soldItem = 'quantity=' + quantity + '&price=' + price;
-
-	      Promise.resolve(this.props.dispatch((0, _itemsActions.sellItem)(soldItem, id))).then(function () {
-	        //Then reload all items
-	        console.log('hello');
-	        _this4.props.dispatch((0, _itemsActions.fetchItems)(_this4.props._id));
-	      }).catch(function (err) {
-	        //Warring any errors
-	        console.log('WARRING!!!', err);
-	      });
+	    //  Handle sell button function
+	    value: function sellButtonValidation() {
+	      //  Var
+	      var row = this.props.row;
+	      var item = this.props.itemArray[row];
+	      //  No row selected
+	      if (row === '' || !item) {
+	        //Disabled button
+	        return true;
+	        //  Row is selected
+	      } else {
+	        //  && there is quantity available to sell
+	        if (item.quantity > 0) {
+	          // Enabled sell button
+	          return false;
+	        } else {
+	          // Disable sell button
+	          return true;
+	        }
+	      }
 	    }
+	    //  Handle add Modal
+
 	  }, {
 	    key: 'addHandleModal',
 	    value: function addHandleModal(event) {
 	      event.preventDefault();
 	      this.props.dispatch({ type: 'UPDATE_MODAL_ADDITEM' });
 	    }
+	    // Handle sell Modal
+
 	  }, {
 	    key: 'sellHandleModal',
 	    value: function sellHandleModal(event) {
 	      event.preventDefault();
 	      this.props.dispatch({ type: 'UPDATE_MODAL_SELLITEM' });
 	    }
-	  }, {
-	    key: 'render',
+	    //  Handle update Modal
 
+	  }, {
+	    key: 'updateHandleModal',
+	    value: function updateHandleModal(event) {
+	      event.preventDefault();
+	      console.log('update');
+	      this.props.dispatch({ type: 'UPDATE_MODAL_UPDATEITEM' });
+	    }
+	    //  Handle delete Modal
+
+	  }, {
+	    key: 'deleteHandleModal',
+	    value: function deleteHandleModal(event) {
+	      event.preventDefault();
+	      this.props.dispatch({ type: 'UPDATE_MODAL_DELETEITEM' });
+	    }
 
 	    /**
 	     * Render the component.
 	     */
+
+	  }, {
+	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
@@ -75286,34 +75473,61 @@
 	          { className: 'container' },
 	          _react2.default.createElement(_ItemTable2.default, {
 	            itemArray: this.props.itemArray,
-	            handleRowSelection: this.handleRowSelection
-	          }),
+	            handleRowSelection: this.handleRowSelection }),
 	          _react2.default.createElement(_RaisedButton2.default, {
 	            style: buttonStyle,
+	            labelStyle: { color: 'white' },
 	            onClick: this.addHandleModal,
 	            label: 'Add',
 	            primary: true }),
 	          _react2.default.createElement(_RaisedButton2.default, {
 	            style: buttonStyle,
-	            onClick: this.sellHandleModal, label: 'Sell',
+	            labelStyle: { color: 'white' },
+	            onClick: this.updateHandleModal,
+	            label: 'Update',
+	            primary: true,
+	            disabled: this.props.row === '' }),
+	          _react2.default.createElement(_RaisedButton2.default, {
+	            style: buttonStyle,
+	            labelStyle: { color: 'white' },
+	            onClick: this.sellHandleModal,
+	            label: 'Sell',
 	            secondary: true,
-	            disabled: this.props.row === ''
-	          }),
+	            disabled: this.sellButtonValidation() }),
+	          _react2.default.createElement(_RaisedButton2.default, {
+	            style: buttonStyle,
+	            backgroundColor: _colors.red500,
+	            labelStyle: { color: 'white' },
+	            onClick: this.deleteHandleModal,
+	            label: 'Delete',
+	            disabled: this.props.row === '' }),
 	          _react2.default.createElement(_AddItemModal2.default, {
 	            handleModal: this.addHandleModal,
 	            open: this.props.openAddItem,
-	            onSubmit: this.processForm,
+	            onSubmit: this.addItem,
 	            onChange: this.changeItem,
-	            errors: this.props.errors
-	          }),
+	            errors: this.props.errors }),
 	          _react2.default.createElement(_SellItemModal2.default, {
-	            item: this.props.itemArray[this.props.row],
+	            item: this.props.item,
 	            row: this.props.row,
 	            handleModal: this.sellHandleModal,
 	            open: this.props.openSellItem,
 	            errors: this.props.errors,
-	            onSubmit: this.sellItem
-	          })
+	            onSubmit: this.sellItem }),
+	          _react2.default.createElement(_UpdateItemModal2.default, {
+	            handleModal: this.updateHandleModal,
+	            open: this.props.openUpdateItem,
+	            errors: this.props.errors,
+	            onChange: this.changeItem,
+	            onSubmit: this.updateItem }),
+	          _react2.default.createElement(_DeleteItemModal2.default, {
+	            item: this.props.item,
+	            row: this.props.row,
+	            handleModal: this.deleteHandleModal,
+	            open: this.props.openDeleteItem,
+	            onChange: this.changeItem,
+	            errors: this.props.errors,
+	            onSubmit: this.deleteItem })
 	        )
 	      );
 	    }
@@ -75707,13 +75921,11 @@
 	          _Dialog2.default,
 	          {
 	            actions: actions,
-	            open: this.props.open
-	          },
+	            open: this.props.open },
 	          _react2.default.createElement(_ItemForm2.default, {
 	            onChange: this.props.onChange,
 	            errors: this.props.errors,
-	            item: this.props.item
-	          })
+	            item: this.props.item })
 	        )
 	      );
 	    }
@@ -75893,40 +76105,8 @@
 
 	    return _possibleConstructorReturn(this, (SellForm.__proto__ || Object.getPrototypeOf(SellForm)).call(this, props));
 	  }
-	  //Add a new Item function
-
 
 	  _createClass(SellForm, [{
-	    key: 'sellItem',
-	    value: function sellItem(event) {
-	      var _this2 = this;
-
-	      // prevent default action. in this case, action is the form submission event
-	      event.preventDefault();
-	      // create a string for an HTTP body message
-	      var id = encodeURIComponent(this.props.item._id);
-	      var quantity = encodeURIComponent(1);
-	      var price = encodeURIComponent(this.props.item.price);
-	      var soldItem = 'quantity=' + quantity + '&price=' + price;
-
-	      // create an AJAX request
-	      var xhr = new XMLHttpRequest();
-	      xhr.open('POST', '/api/item/' + this.props.item._id);
-	      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	      xhr.setRequestHeader('Authorization', 'bearer ' + _Auth2.default.getToken());
-	      xhr.responseType = 'json';
-	      xhr.addEventListener('load', function () {
-	        //If successfully created a item
-	        if (xhr.status === 200) {
-	          console.log('YYYAAAYYYY!!!!!!!!!!!!');
-	          _this2.props.handleItemArray(xhr.response);
-	        } else {
-	          console.log('ERROR!!!!!!!!!!!');
-	        }
-	      });
-	      xhr.send(soldItem);
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
 
@@ -110605,9 +110785,354 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.default = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Dialog = __webpack_require__(553);
+
+	var _Dialog2 = _interopRequireDefault(_Dialog);
+
+	var _FlatButton = __webpack_require__(540);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	var _RaisedButton = __webpack_require__(583);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _SellForm = __webpack_require__(721);
+
+	var _SellForm2 = _interopRequireDefault(_SellForm);
+
+	var _Card = __webpack_require__(514);
+
+	var _Card2 = _interopRequireDefault(_Card);
+
+	var _colors = __webpack_require__(337);
+
+	var _colors2 = _interopRequireDefault(_colors);
+
+	var _Auth = __webpack_require__(642);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //Import packages
+
+
+	var divStyle = {
+	  backgroundColor: _colors2.default
+	};
+
+	var SellitemModal = function (_React$Component) {
+	  _inherits(SellitemModal, _React$Component);
+
+	  //Class constructor
+	  function SellitemModal(props) {
+	    _classCallCheck(this, SellitemModal);
+
+	    var _this = _possibleConstructorReturn(this, (SellitemModal.__proto__ || Object.getPrototypeOf(SellitemModal)).call(this, props));
+
+	    _this.handleSubmit = _this.handleSubmit.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(SellitemModal, [{
+	    key: 'handleSubmit',
+	    value: function handleSubmit(event) {
+	      event.preventDefault();
+	      this.props.onSubmit(this.props.item);
+	      this.props.handleModal(event);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var actions = [_react2.default.createElement(_FlatButton2.default, {
+	        label: 'Cancel',
+	        primary: true,
+	        onClick: this.props.handleModal
+	      }), _react2.default.createElement(_FlatButton2.default, {
+	        label: 'Submit',
+	        primary: true,
+	        onClick: this.handleSubmit
+	      })];
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          _Dialog2.default,
+	          {
+	            actions: actions,
+	            open: this.props.open
+	          },
+	          _react2.default.createElement(_SellForm2.default, {
+	            onChange: this.props.onChange,
+	            errors: this.props.errors,
+	            item: this.props.item
+	          })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return SellitemModal;
+	}(_react2.default.Component);
+
+	exports.default = SellitemModal;
+
+/***/ }),
+/* 1035 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _dec, _class; //Import packages
+
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Dialog = __webpack_require__(553);
+
+	var _Dialog2 = _interopRequireDefault(_Dialog);
+
+	var _FlatButton = __webpack_require__(540);
+
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+
+	var _RaisedButton = __webpack_require__(583);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _UpdateForm = __webpack_require__(1036);
+
+	var _UpdateForm2 = _interopRequireDefault(_UpdateForm);
+
+	var _Card = __webpack_require__(514);
+
+	var _Card2 = _interopRequireDefault(_Card);
+
+	var _colors = __webpack_require__(337);
+
+	var _colors2 = _interopRequireDefault(_colors);
+
+	var _Auth = __webpack_require__(642);
+
+	var _Auth2 = _interopRequireDefault(_Auth);
+
+	var _reactRedux = __webpack_require__(237);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var divStyle = {
+	  backgroundColor: _colors2.default
+	};
+
+	var SellitemModal = (_dec = (0, _reactRedux.connect)(function (store) {
+	  return {
+	    item: store.items.item
+	  };
+	}), _dec(_class = function (_React$Component) {
+	  _inherits(SellitemModal, _React$Component);
+
+	  //Class constructor
+	  function SellitemModal(props) {
+	    _classCallCheck(this, SellitemModal);
+
+	    var _this = _possibleConstructorReturn(this, (SellitemModal.__proto__ || Object.getPrototypeOf(SellitemModal)).call(this, props));
+
+	    _this.handleSubmit = _this.handleSubmit.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(SellitemModal, [{
+	    key: 'handleSubmit',
+	    value: function handleSubmit(event) {
+	      event.preventDefault();
+	      this.props.onSubmit(this.props.item);
+	      this.props.handleModal(event);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var actions = [_react2.default.createElement(_FlatButton2.default, {
+	        label: 'Cancel',
+	        primary: true,
+	        onClick: this.props.handleModal
+	      }), _react2.default.createElement(_FlatButton2.default, {
+	        label: 'Submit',
+	        primary: true,
+	        onClick: this.handleSubmit
+	      })];
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          _Dialog2.default,
+	          {
+	            actions: actions,
+	            open: this.props.open
+	          },
+	          _react2.default.createElement(_UpdateForm2.default, {
+	            onChange: this.props.onChange,
+	            errors: this.props.errors,
+	            item: this.props.item
+	          })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return SellitemModal;
+	}(_react2.default.Component)) || _class);
+	exports.default = SellitemModal;
+
+/***/ }),
+/* 1036 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouterDom = __webpack_require__(643);
+
+	var _RaisedButton = __webpack_require__(583);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _TextField = __webpack_require__(477);
+
+	var _TextField2 = _interopRequireDefault(_TextField);
+
+	var _Card = __webpack_require__(514);
+
+	var _Card2 = _interopRequireDefault(_Card);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var formStyle = {
+	  margin: "auto"
+	};
+
+	var ItemForm = function ItemForm(_ref) {
+	  var onChange = _ref.onChange,
+	      errors = _ref.errors,
+	      item = _ref.item;
+	  return _react2.default.createElement(
+	    _Card2.default,
+	    { className: 'container' },
+	    _react2.default.createElement(
+	      'form',
+	      { style: formStyle },
+	      _react2.default.createElement(
+	        'h2',
+	        { className: 'card-heading' },
+	        'Update ',
+	        item.name
+	      ),
+	      errors.summary && _react2.default.createElement(
+	        'p',
+	        { className: 'error-message' },
+	        errors.summary
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'field-line' },
+	        _react2.default.createElement(_TextField2.default, {
+	          floatingLabelText: 'Name',
+	          name: 'name',
+	          errorText: errors.name,
+	          onChange: onChange,
+	          value: item.name
+	        })
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'field-line' },
+	        _react2.default.createElement(_TextField2.default, {
+	          floatingLabelText: 'Description',
+	          name: 'description',
+	          errorText: errors.name,
+	          onChange: onChange,
+	          value: item.description
+	        })
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'field-line' },
+	        _react2.default.createElement(_TextField2.default, {
+	          floatingLabelText: 'quantity',
+	          name: 'quantity',
+	          errorText: errors.name,
+	          onChange: onChange,
+	          value: item.quantity
+	        })
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'field-line' },
+	        _react2.default.createElement(_TextField2.default, {
+	          floatingLabelText: 'price',
+	          type: 'number',
+	          name: 'price',
+	          onChange: onChange,
+	          errorText: errors.name,
+	          value: item.price
+	        })
+	      )
+	    )
+	  );
+	};
+
+	exports.default = ItemForm;
+
+/***/ }),
+/* 1037 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.fetchItems = fetchItems;
 	exports.createItem = createItem;
 	exports.sellItem = sellItem;
+	exports.updateItem = updateItem;
+	exports.deleteItem = deleteItem;
 	exports.addItem = addItem;
 	exports.changeItem = changeItem;
 
@@ -110672,8 +111197,6 @@
 	  return function (dispatch) {
 	    dispatch({ type: 'SELLING_ITEM_START' });
 
-	    console.log(itemData);
-	    console.log(id);
 	    var authReq = {
 	      method: 'POST',
 	      url: '/api/item/' + id,
@@ -110692,14 +111215,54 @@
 	    });
 	  };
 	}
+	function updateItem(itemData, id) {
+	  return function (dispatch) {
+	    dispatch({ type: 'UPDATING_ITEM_START' });
 
+	    var authReq = {
+	      method: 'PUT',
+	      url: '/api/item/' + id,
+	      headers: {
+	        'Authorization': 'bearer ' + _Auth2.default.getToken(),
+	        'Content-Type': 'application/x-www-form-urlencoded'
+	      },
+	      json: true,
+	      data: itemData
+	    };
+
+	    (0, _axios2.default)(authReq).then(function (res) {
+	      dispatch({ type: 'UPDATING_ITEM_FULFILLED', payload: res.data });
+	    }).catch(function (err) {
+	      dispatch({ type: 'UPDATING_ITEM_ERROR', payload: err });
+	    });
+	  };
+	}
+	function deleteItem(id) {
+	  return function (dispatch) {
+	    dispatch({ type: 'DELETING_ITEM_START' });
+
+	    var authReq = {
+	      method: 'DELETE',
+	      url: '/api/item/' + id,
+	      headers: {
+	        'Authorization': 'bearer ' + _Auth2.default.getToken(),
+	        'Content-Type': 'application/x-www-form-urlencoded'
+	      },
+	      json: true
+	    };
+	    (0, _axios2.default)(authReq).then(function (res) {
+	      dispatch({ type: 'DELETING_ITEM_FULFILLED', payload: res.data });
+	    }).catch(function (err) {
+	      dispatch({ type: 'DELETING_ITEM_ERROR', payload: err });
+	    });
+	  };
+	}
 	function addItem(item) {
 	  return { type: 'ADD_ITEM', payload: item };
 	}
 
 	function changeItem(event, item) {
 	  return function (dispatch) {
-	    console.log(item);
 	    var field = event.target.name;
 	    item[field] = event.target.value;
 	    dispatch({ type: 'UPDATE_ITEM', payload: item });
@@ -110707,7 +111270,7 @@
 	}
 
 /***/ }),
-/* 1035 */
+/* 1038 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';

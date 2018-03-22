@@ -3,32 +3,28 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import ItemForm from '../components/ItemForm.jsx';
+import SellForm from '../components/SellForm.jsx';
 import Card from 'material-ui/Card';
 import blue900 from 'material-ui/styles/colors';
-import { connect } from 'react-redux';
+import Auth from '../modules/Auth';
 
-//CSS
 const divStyle={
   backgroundColor: blue900
 }
-@connect((store) => {
-  return{
-    item: store.items.item,
-  }
-})
-export default class AddItemModal extends React.Component {
+
+export default class SellitemModal extends React.Component {
 
   //Class constructor
   constructor(props){
     super(props);
+
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(event){
     event.preventDefault();
-    this.props.onSubmit(event);
-    this.props.handleModal(event)
+    this.props.onSubmit(this.props.item);
+    this.props.handleModal(event);
   }
   render(){
     const actions = [
@@ -43,17 +39,20 @@ export default class AddItemModal extends React.Component {
         onClick={this.handleSubmit}
       />,
     ];
+
     return(
       <div>
           <Dialog
             actions={actions}
-            open={this.props.open} >
-            <ItemForm
-              onChange={this.props.onChange}
-              errors={this.props.errors}
-              item={this.props.item} />
-          </ Dialog>
-      </ div>
+            open={this.props.open}
+          >
+          <SellForm
+            onChange={this.props.onChange}
+            errors={this.props.errors}
+            item={this.props.item}
+          />
+          </Dialog>
+      </div>
 
     )
   }

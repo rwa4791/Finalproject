@@ -3,6 +3,8 @@ export default function reducer( state = {
   fetching: false,
   creatingItem: false,
   sellingItem: false,
+  updatingItem: false,
+  deletingItem: false,
   fetched: false,
   itemArray: [],
   errors: {},
@@ -74,6 +76,44 @@ export default function reducer( state = {
       return{
         ...state,
         sellingItem: false,
+      }
+    }
+    case 'UPDATING_ITEM_START' : {
+      return{
+        ...state,
+        updatingItem: true
+      }
+    }
+    case 'UPDATING_ITEM_ERROR' : {
+      return{
+        ...state,
+        errors: action.payload,
+        updatingItem: false,
+      }
+    }
+    case 'UPDATING_ITEM_FULFILLED' : {
+      return{
+        ...state,
+        updatingItem: false,
+      }
+    }
+    case 'DELETING_ITEM_START' : {
+      return{
+        ...state,
+        deletingItem: true
+      }
+    }
+    case 'DELETING_ITEM_ERROR' : {
+      return{
+        ...state,
+        errors: action.payload,
+        deletingItem: false,
+      }
+    }
+    case 'DELETING_ITEM_FULFILLED' : {
+      return{
+        ...state,
+        deletingItem: false,
       }
     }
     default: {

@@ -5,7 +5,9 @@ export default function reducer ( state ={
   errors: {},
   successMessage: '',
   openAddItem: false,
-  openSellItem: false
+  openSellItem: false,
+  openUpdateItem: false,
+  openDeleteItem: false,
 }, action ) {
 
   switch(action.type){
@@ -27,6 +29,20 @@ export default function reducer ( state ={
         return {...state, openSellItem: true}
       }else {
         return {...state, openSellItem: false}
+      }
+    }
+    case 'UPDATE_MODAL_UPDATEITEM' : {
+      if( state.openUpdateItem === false){
+        return {...state, openUpdateItem: true}
+      }else {
+        return {...state, openUpdateItem: false}
+      }
+    }
+    case 'UPDATE_MODAL_DELETEITEM' : {
+      if( state.openDeleteItem === false){
+        return {...state, openDeleteItem: true}
+      }else {
+        return {...state, openDeleteItem: false}
       }
     }
     case 'SETTING_ERRORS' : {

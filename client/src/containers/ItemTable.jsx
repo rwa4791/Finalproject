@@ -21,6 +21,8 @@ export default class ItemTable extends React.Component{
         fixedHeader={true}
         selectable={true}
         multiSelectable={false}
+        fixedFooter={true}
+        height={'250px'}
       >
         <TableHeader
           displaySelectAll={true}
@@ -35,8 +37,8 @@ export default class ItemTable extends React.Component{
           </TableRow>
         </TableHeader>
         <TableBody
-          deselectOnClickaway={false}
-        >
+          stripedRows={true}
+          deselectOnClickaway={false}>
           {
             this.props.itemArray.map((item) =>{
             return(

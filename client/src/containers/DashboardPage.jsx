@@ -116,8 +116,6 @@ export default class DashboardPage extends React.Component {
   //  Update Item function
   updateItem(item){
 
-    console.log('updateItem DashboardPage:');
-    console.log(item)
     const id = item._id;
     const name = item.name;
     const quantity = item.quantity;
@@ -129,6 +127,13 @@ export default class DashboardPage extends React.Component {
       .then( () =>{
         //Then reload all items
         this.props.dispatch(fetchItems(this.props._id));
+        //  Clear row
+        this.props.dispatch({type: 'UPDATE_ROW', payload: ''})
+        //  Clear item
+        this.props.dispatch({
+          type:"UPDATE_ITEM",
+          payload: {}
+        })
       }).catch( (err) =>{
         //Warring any errors
         console.log('WARRING!!!', err);

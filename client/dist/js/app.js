@@ -75280,8 +75280,6 @@
 	    value: function updateItem(item) {
 	      var _this4 = this;
 
-	      console.log('updateItem DashboardPage:');
-	      console.log(item);
 	      var id = item._id;
 	      var name = item.name;
 	      var quantity = item.quantity;
@@ -75292,6 +75290,13 @@
 	      Promise.resolve(this.props.dispatch((0, _itemsActions.updateItem)(itemData, id))).then(function () {
 	        //Then reload all items
 	        _this4.props.dispatch((0, _itemsActions.fetchItems)(_this4.props._id));
+	        //  Clear row
+	        _this4.props.dispatch({ type: 'UPDATE_ROW', payload: '' });
+	        //  Clear item
+	        _this4.props.dispatch({
+	          type: "UPDATE_ITEM",
+	          payload: {}
+	        });
 	      }).catch(function (err) {
 	        //Warring any errors
 	        console.log('WARRING!!!', err);
@@ -75741,7 +75746,9 @@
 	          onRowSelection: this.props.handleRowSelection,
 	          fixedHeader: true,
 	          selectable: true,
-	          multiSelectable: false
+	          multiSelectable: false,
+	          fixedFooter: true,
+	          height: '250px'
 	        },
 	        _react2.default.createElement(
 	          _Table.TableHeader,
@@ -75778,8 +75785,8 @@
 	        _react2.default.createElement(
 	          _Table.TableBody,
 	          {
-	            deselectOnClickaway: false
-	          },
+	            stripedRows: true,
+	            deselectOnClickaway: false },
 	          this.props.itemArray.map(function (item) {
 	            return _react2.default.createElement(
 	              _Table.TableRow,

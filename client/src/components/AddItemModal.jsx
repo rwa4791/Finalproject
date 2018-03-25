@@ -26,8 +26,9 @@ export default class AddItemModal extends React.Component {
   }
 
   handleSubmit(event){
+    // prevent default action. in this case, action is the form submission event
     event.preventDefault();
-    this.props.onSubmit(event);
+    this.props.onSubmit(this.props.item);
     this.props.handleModal(event)
   }
   render(){

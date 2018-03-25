@@ -75227,16 +75227,14 @@
 
 	  _createClass(DashboardPage, [{
 	    key: 'addItem',
-	    value: function addItem(event) {
+	    value: function addItem(item) {
 	      var _this2 = this;
 
-	      // prevent default action. in this case, action is the form submission event
-	      event.preventDefault();
 	      // create a string for an HTTP body message
-	      var name = encodeURIComponent(this.props.item.name);
-	      var description = encodeURIComponent(this.props.item.description);
-	      var quantity = encodeURIComponent(this.props.item.quantity);
-	      var price = encodeURIComponent(this.props.item.price);
+	      var name = encodeURIComponent(item.name);
+	      var description = encodeURIComponent(item.description);
+	      var quantity = encodeURIComponent(item.quantity);
+	      var price = encodeURIComponent(item.price);
 	      var user_id = encodeURIComponent(this.props._id);
 	      var itemData = 'name=' + name + '&description=' + description + '&quantity=' + quantity + '&price=' + price + '&user_id=' + user_id;
 
@@ -75282,6 +75280,8 @@
 	    value: function updateItem(item) {
 	      var _this4 = this;
 
+	      console.log('updateItem DashboardPage:');
+	      console.log(item);
 	      var id = item._id;
 	      var name = item.name;
 	      var quantity = item.quantity;
@@ -75894,8 +75894,9 @@
 	  _createClass(AddItemModal, [{
 	    key: 'handleSubmit',
 	    value: function handleSubmit(event) {
+	      // prevent default action. in this case, action is the form submission event
 	      event.preventDefault();
-	      this.props.onSubmit(event);
+	      this.props.onSubmit(this.props.item);
 	      this.props.handleModal(event);
 	    }
 	  }, {
@@ -110976,7 +110977,7 @@
 	    key: 'handleSubmit',
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
-	      this.props.onSubmit(event);
+	      this.props.onSubmit(this.props.item);
 	      this.props.handleModal(event);
 	    }
 	  }, {

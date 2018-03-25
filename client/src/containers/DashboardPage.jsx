@@ -69,14 +69,13 @@ export default class DashboardPage extends React.Component {
   }
 
   //Add a new Item function
-  addItem(event) {
-    // prevent default action. in this case, action is the form submission event
-    event.preventDefault();
+  addItem(item) {
+
     // create a string for an HTTP body message
-    const name = encodeURIComponent(this.props.item.name);
-    const description = encodeURIComponent(this.props.item.description);
-    const quantity = encodeURIComponent(this.props.item.quantity);
-    const price = encodeURIComponent(this.props.item.price);
+    const name = encodeURIComponent(item.name);
+    const description = encodeURIComponent(item.description);
+    const quantity = encodeURIComponent(item.quantity);
+    const price = encodeURIComponent(item.price);
     const user_id = encodeURIComponent(this.props._id);
     const itemData = `name=${name}&description=${description}&quantity=${quantity}&price=${price}&user_id=${user_id}`;
 
@@ -116,6 +115,9 @@ export default class DashboardPage extends React.Component {
   }
   //  Update Item function
   updateItem(item){
+
+    console.log('updateItem DashboardPage:');
+    console.log(item)
     const id = item._id;
     const name = item.name;
     const quantity = item.quantity;

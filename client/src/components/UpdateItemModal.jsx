@@ -24,12 +24,11 @@ export default class SellitemModal extends React.Component {
   //Class constructor
   constructor(props){
     super(props);
-
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleSubmit(event){
     event.preventDefault();
-    this.props.onSubmit(this.props.item);
+    this.props.onSubmit(event);
     this.props.handleModal(event);
   }
   render(){

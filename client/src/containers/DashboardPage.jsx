@@ -17,10 +17,11 @@ import ChartsCard from './ChartsCard.jsx';
 import { red500 } from 'material-ui/styles/colors';
 import DeleteItemModal from '../components/DeleteItemModal.jsx';
 import UpdateItemModal from '../components/UpdateItemModal.jsx';
+
 //  Import Actions
 import { fetchItems,
          createItem,
-         changeItem,
+         onChangeItem,
          sellItem,
          updateItem,
          deleteItem, } from '../actions/itemsActions';
@@ -57,7 +58,7 @@ export default class DashboardPage extends React.Component {
     this.sellItem = this.sellItem.bind(this);
     this.updateItem = this.updateItem.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
-    this.changeItem = this.changeItem.bind(this);
+    this.onChangeItem = this.onChangeItem.bind(this);
     //  Bind handle modal
     this.addHandleModal = this.addHandleModal.bind(this);
     this.sellHandleModal = this.sellHandleModal.bind(this);
@@ -133,26 +134,25 @@ export default class DashboardPage extends React.Component {
   }
   //  Delete Item function
   deleteItem(item){
-    console.log('DELETING ITEM!!')
-    const id = item = item._id
 
+    const id = item._id
     Promise.resolve(this.props.dispatch(deleteItem(id)))
       .then( () =>{
-        //  Then reload all items
-        this.props.dispatch(fetchItems(this.props._id));
         //  Clear item
         this.props.dispatch({type: 'UPDATE_ITEM', payload: {}});
         //  Clear row
         this.props.dispatch({type: 'UPDATE_ROW', payload: ''});
+        //  Then reload all items
+        this.props.dispatch(fetchItems(this.props._id));
       }).catch( (err) =>{
         //Warring any errors
         console.log('WARRING!!!', err);
       })
   }
   // Item text handler
-  changeItem(event) {
+  onChangeItem(event) {
     event.preventDefault();
-    this.props.dispatch(changeItem(event, this.props.item))
+    this.props.dispatch(onChangeItem(event, this.props.item))
   }
 
   //  Select a row
@@ -191,7 +191,6 @@ export default class DashboardPage extends React.Component {
         payload: item
       })
     }
-
   }
   /**
    * This method will be executed after initial rendering.
@@ -246,7 +245,6 @@ export default class DashboardPage extends React.Component {
   //  Handle update Modal
   updateHandleModal(event){
     event.preventDefault();
-    console.log('update');
     this.props.dispatch({type: 'UPDATE_MODAL_UPDATEITEM'})
   }
   //  Handle delete Modal
@@ -304,27 +302,25 @@ export default class DashboardPage extends React.Component {
             handleModal={this.addHandleModal}
             open={this.props.openAddItem}
             onSubmit={this.addItem}
-            onChange={this.changeItem}
+            onChange={this.onChangeItem}
             errors={this.props.errors} />
           <SellItemModal
-            item={this.props.item}
-            row={this.props.row}
             handleModal={this.sellHandleModal}
             open={this.props.openSellItem}
-            errors={this.props.errors}
-            onSubmit={this.sellItem} />
+            onSubmit={this.sellItem}
+            errors={this.props.errors} />
           <UpdateItemModal
             handleModal={this.updateHandleModal}
             open={this.props.openUpdateItem}
-            errors={this.props.errors}
-            onChange={this.changeItem}
-            onSubmit={this.updateItem} />
+            onSubmit={this.updateItem}
+            onChange={this.onChangeItem}
+            errors={this.props.errors} />
           <DeleteItemModal
             item={this.props.item}
             row={this.props.row}
             handleModal={this.deleteHandleModal}
             open={this.props.openDeleteItem}
-            onChange={this.changeItem}
+            onChange={this.onChangeItem}
             errors={this.props.errors}
             onSubmit={this.deleteItem} />
 

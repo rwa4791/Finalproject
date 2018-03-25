@@ -75105,6 +75105,7 @@
 
 	//  Import Component
 
+
 	//  Import Actions
 
 
@@ -75210,7 +75211,7 @@
 	    _this.sellItem = _this.sellItem.bind(_this);
 	    _this.updateItem = _this.updateItem.bind(_this);
 	    _this.deleteItem = _this.deleteItem.bind(_this);
-	    _this.changeItem = _this.changeItem.bind(_this);
+	    _this.onChangeItem = _this.onChangeItem.bind(_this);
 	    //  Bind handle modal
 	    _this.addHandleModal = _this.addHandleModal.bind(_this);
 	    _this.sellHandleModal = _this.sellHandleModal.bind(_this);
@@ -75303,16 +75304,14 @@
 	    value: function deleteItem(item) {
 	      var _this5 = this;
 
-	      console.log('DELETING ITEM!!');
-	      var id = item = item._id;
-
+	      var id = item._id;
 	      Promise.resolve(this.props.dispatch((0, _itemsActions.deleteItem)(id))).then(function () {
-	        //  Then reload all items
-	        _this5.props.dispatch((0, _itemsActions.fetchItems)(_this5.props._id));
 	        //  Clear item
 	        _this5.props.dispatch({ type: 'UPDATE_ITEM', payload: {} });
 	        //  Clear row
 	        _this5.props.dispatch({ type: 'UPDATE_ROW', payload: '' });
+	        //  Then reload all items
+	        _this5.props.dispatch((0, _itemsActions.fetchItems)(_this5.props._id));
 	      }).catch(function (err) {
 	        //Warring any errors
 	        console.log('WARRING!!!', err);
@@ -75321,10 +75320,10 @@
 	    // Item text handler
 
 	  }, {
-	    key: 'changeItem',
-	    value: function changeItem(event) {
+	    key: 'onChangeItem',
+	    value: function onChangeItem(event) {
 	      event.preventDefault();
-	      this.props.dispatch((0, _itemsActions.changeItem)(event, this.props.item));
+	      this.props.dispatch((0, _itemsActions.onChangeItem)(event, this.props.item));
 	    }
 
 	    //  Select a row
@@ -75436,7 +75435,6 @@
 	    key: 'updateHandleModal',
 	    value: function updateHandleModal(event) {
 	      event.preventDefault();
-	      console.log('update');
 	      this.props.dispatch({ type: 'UPDATE_MODAL_UPDATEITEM' });
 	    }
 	    //  Handle delete Modal
@@ -75505,27 +75503,25 @@
 	            handleModal: this.addHandleModal,
 	            open: this.props.openAddItem,
 	            onSubmit: this.addItem,
-	            onChange: this.changeItem,
+	            onChange: this.onChangeItem,
 	            errors: this.props.errors }),
 	          _react2.default.createElement(_SellItemModal2.default, {
-	            item: this.props.item,
-	            row: this.props.row,
 	            handleModal: this.sellHandleModal,
 	            open: this.props.openSellItem,
-	            errors: this.props.errors,
-	            onSubmit: this.sellItem }),
+	            onSubmit: this.sellItem,
+	            errors: this.props.errors }),
 	          _react2.default.createElement(_UpdateItemModal2.default, {
 	            handleModal: this.updateHandleModal,
 	            open: this.props.openUpdateItem,
-	            errors: this.props.errors,
-	            onChange: this.changeItem,
-	            onSubmit: this.updateItem }),
+	            onSubmit: this.updateItem,
+	            onChange: this.onChangeItem,
+	            errors: this.props.errors }),
 	          _react2.default.createElement(_DeleteItemModal2.default, {
 	            item: this.props.item,
 	            row: this.props.row,
 	            handleModal: this.deleteHandleModal,
 	            open: this.props.openDeleteItem,
-	            onChange: this.changeItem,
+	            onChange: this.onChangeItem,
 	            errors: this.props.errors,
 	            onSubmit: this.deleteItem })
 	        )
@@ -75948,6 +75944,9 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _dec, _class; //Import packages
+
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -75980,20 +75979,24 @@
 
 	var _Auth2 = _interopRequireDefault(_Auth);
 
+	var _reactRedux = __webpack_require__(237);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //Import packages
-
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var divStyle = {
 	  backgroundColor: _colors2.default
 	};
-
-	var SellitemModal = function (_React$Component) {
+	var SellitemModal = (_dec = (0, _reactRedux.connect)(function (store) {
+	  return {
+	    item: store.items.item
+	  };
+	}), _dec(_class = function (_React$Component) {
 	  _inherits(SellitemModal, _React$Component);
 
 	  //Class constructor
@@ -76046,8 +76049,7 @@
 	  }]);
 
 	  return SellitemModal;
-	}(_react2.default.Component);
-
+	}(_react2.default.Component)) || _class);
 	exports.default = SellitemModal;
 
 /***/ }),
@@ -110974,7 +110976,7 @@
 	    key: 'handleSubmit',
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
-	      this.props.onSubmit(this.props.item);
+	      this.props.onSubmit(event);
 	      this.props.handleModal(event);
 	    }
 	  }, {
@@ -111047,7 +111049,7 @@
 	  margin: "auto"
 	};
 
-	var ItemForm = function ItemForm(_ref) {
+	var UpdateForm = function UpdateForm(_ref) {
 	  var onChange = _ref.onChange,
 	      errors = _ref.errors,
 	      item = _ref.item;
@@ -111076,7 +111078,7 @@
 	          name: 'name',
 	          errorText: errors.name,
 	          onChange: onChange,
-	          value: item.name
+	          defaultValue: item.name
 	        })
 	      ),
 	      _react2.default.createElement(
@@ -111087,7 +111089,7 @@
 	          name: 'description',
 	          errorText: errors.name,
 	          onChange: onChange,
-	          value: item.description
+	          defaultValue: item.description
 	        })
 	      ),
 	      _react2.default.createElement(
@@ -111098,7 +111100,7 @@
 	          name: 'quantity',
 	          errorText: errors.name,
 	          onChange: onChange,
-	          value: item.quantity
+	          defaultValue: item.quantity
 	        })
 	      ),
 	      _react2.default.createElement(
@@ -111110,14 +111112,14 @@
 	          name: 'price',
 	          onChange: onChange,
 	          errorText: errors.name,
-	          value: item.price
+	          defaultValue: item.price
 	        })
 	      )
 	    )
 	  );
 	};
 
-	exports.default = ItemForm;
+	exports.default = UpdateForm;
 
 /***/ }),
 /* 1037 */
@@ -111134,7 +111136,7 @@
 	exports.updateItem = updateItem;
 	exports.deleteItem = deleteItem;
 	exports.addItem = addItem;
-	exports.changeItem = changeItem;
+	exports.onChangeItem = onChangeItem;
 
 	var _axios = __webpack_require__(682);
 
@@ -111261,7 +111263,7 @@
 	  return { type: 'ADD_ITEM', payload: item };
 	}
 
-	function changeItem(event, item) {
+	function onChangeItem(event, item) {
 	  return function (dispatch) {
 	    var field = event.target.name;
 	    item[field] = event.target.value;

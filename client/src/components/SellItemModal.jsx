@@ -7,11 +7,16 @@ import SellForm from '../components/SellForm.jsx';
 import Card from 'material-ui/Card';
 import blue900 from 'material-ui/styles/colors';
 import Auth from '../modules/Auth';
+import { connect } from 'react-redux';
 
 const divStyle={
   backgroundColor: blue900
 }
-
+@connect((store) => {
+  return{
+    item: store.items.item,
+  }
+})
 export default class SellitemModal extends React.Component {
 
   //Class constructor

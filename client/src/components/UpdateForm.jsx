@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -8,7 +8,7 @@ const formStyle ={
   margin: "auto"
 }
 
-const ItemForm = ({
+const UpdateForm = ({
   onChange,
   errors,
   item,
@@ -20,12 +20,12 @@ const ItemForm = ({
     {errors.summary && <p className="error-message">{errors.summary}</p>}
 
     <div className="field-line">
-      <TextField
+        <TextField
         floatingLabelText="Name"
         name="name"
         errorText={errors.name}
         onChange={onChange}
-        value={item.name}
+        defaultValue={item.name}
       />
     </div>
 
@@ -35,7 +35,7 @@ const ItemForm = ({
         name="description"
         errorText={errors.name}
         onChange={onChange}
-        value={item.description}
+        defaultValue={item.description}
       />
     </div>
     <div className="field-line">
@@ -44,7 +44,7 @@ const ItemForm = ({
         name="quantity"
         errorText={errors.name}
         onChange={onChange}
-        value={item.quantity}
+        defaultValue={item.quantity}
       />
     </div>
 
@@ -55,7 +55,7 @@ const ItemForm = ({
         name="price"
         onChange={onChange}
         errorText={errors.name}
-        value={item.price}
+        defaultValue={item.price}
       />
     </div>
   </form>
@@ -63,4 +63,4 @@ const ItemForm = ({
 );
 
 
-export default ItemForm;
+export default UpdateForm;

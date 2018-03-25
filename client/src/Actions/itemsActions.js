@@ -128,7 +128,7 @@ export function addItem(item) {
   return { type: 'ADD_ITEM', payload: item }
 }
 
-export function changeItem(event, item) {
+export function onChangeItem(event, item) {
   return function(dispatch){
     const field = event.target.name;
     item[field] = event.target.value;

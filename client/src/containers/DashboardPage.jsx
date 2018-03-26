@@ -17,6 +17,7 @@ import ChartsCard from './ChartsCard.jsx';
 import { red500 } from 'material-ui/styles/colors';
 import DeleteItemModal from '../components/DeleteItemModal.jsx';
 import UpdateItemModal from '../components/UpdateItemModal.jsx';
+import IconButton from 'material-ui/IconButton';
 
 //  Import Actions
 import { fetchItems,
@@ -269,7 +270,16 @@ export default class DashboardPage extends React.Component {
     return (
       <div>
         <Card className='container'>
-          <h2 className="card-heading">Inventory</h2>
+          <h2 className="card-heading"> Inventory
+            <IconButton
+              className={'right'}
+              onClick={()=>{console.log('settings');}}
+              tooltipPosition="bottom-center"
+              tooltip="settings"
+              style={{color: '#9b65bb'}}>
+                <i className="material-icons small">settings</i>
+            </IconButton>
+          </h2>
           <ChartsCard itemArray={this.props.itemArray} />
         </Card>
         <Card className='container'>

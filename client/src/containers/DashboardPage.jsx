@@ -151,6 +151,7 @@ export default class DashboardPage extends React.Component {
         this.props.dispatch({type: 'UPDATE_ROW', payload: ''});
         //  Then reload all items
         this.props.dispatch(fetchItems(this.props._id));
+
       }).catch( (err) =>{
         //Warring any errors
         console.log('WARRING!!!', err);

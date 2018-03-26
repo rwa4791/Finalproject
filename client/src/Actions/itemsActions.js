@@ -1,6 +1,8 @@
 //  Import libraries
 import axios from 'axios';
 import Auth from '../modules/Auth';
+import { calculateTable, } from '../actions/settingsActions';
+
 //  Export functions
 export function fetchItems(id){
   return function(dispatch) {
@@ -19,6 +21,7 @@ export function fetchItems(id){
     axios(authReq)
       .then((res) => {
         dispatch({type: 'FETCH_ITEMS_FULFILLED', payload: res.data})
+        dispatch(calculateTable(res.data.length))
       })
       .catch((err) =>{
         dispatch({type: 'FETCH_ITEMS_ERROR', payload: err })

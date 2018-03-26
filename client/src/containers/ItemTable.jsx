@@ -3,11 +3,16 @@ import React, {Component} from 'react';
 import { Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import TextField from 'material-ui/TextField';
 import Toggle from 'material-ui/Toggle';
+import { connect } from 'react-redux';
 
 /**
  * A simple table demonstrating the hierarchy of the `Table` component and its sub-components.
  */
-
+@connect((store) => {
+  return{
+    tableHeight: store.settings.tableHeight
+  }
+})
 export default class ItemTable extends React.Component{
 
   constructor(props){
@@ -22,7 +27,7 @@ export default class ItemTable extends React.Component{
         selectable={true}
         multiSelectable={false}
         fixedFooter={true}
-        height={'250px'}
+        height={this.props.tableHeight}
       >
         <TableHeader
           displaySelectAll={true}

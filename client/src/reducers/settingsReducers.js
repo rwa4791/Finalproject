@@ -4,6 +4,7 @@ export default function reducer ( state ={
   secretData: '',
   errors: {},
   successMessage: '',
+  tableHeight: '50px',
   openAddItem: false,
   openSellItem: false,
   openUpdateItem: false,
@@ -13,6 +14,9 @@ export default function reducer ( state ={
   switch(action.type){
     case 'UPDATE_ROW' : {
       return {...state, row: action.payload}
+    }
+    case 'UPDATE_TABLEHEIGHT': {
+      return {...state, tableHeight: action.payload}
     }
     case 'UPDATE_SECRETDATA' : {
       return {...state, secretData: action.payload}

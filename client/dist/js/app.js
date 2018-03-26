@@ -28513,6 +28513,7 @@
 	    secretData: '',
 	    errors: {},
 	    successMessage: '',
+	    tableHeight: '50px',
 	    openAddItem: false,
 	    openSellItem: false,
 	    openUpdateItem: false,
@@ -28525,6 +28526,10 @@
 	    case 'UPDATE_ROW':
 	      {
 	        return _extends({}, state, { row: action.payload });
+	      }
+	    case 'UPDATE_TABLEHEIGHT':
+	      {
+	        return _extends({}, state, { tableHeight: action.payload });
 	      }
 	    case 'UPDATE_SECRETDATA':
 	      {
@@ -75701,6 +75706,9 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _dec, _class; //Import packages
+
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -75715,20 +75723,24 @@
 
 	var _Toggle2 = _interopRequireDefault(_Toggle);
 
+	var _reactRedux = __webpack_require__(237);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //Import packages
-
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	/**
 	 * A simple table demonstrating the hierarchy of the `Table` component and its sub-components.
 	 */
-
-	var ItemTable = function (_React$Component) {
+	var ItemTable = (_dec = (0, _reactRedux.connect)(function (store) {
+	  return {
+	    tableHeight: store.settings.tableHeight
+	  };
+	}), _dec(_class = function (_React$Component) {
 	  _inherits(ItemTable, _React$Component);
 
 	  function ItemTable(props) {
@@ -75748,7 +75760,7 @@
 	          selectable: true,
 	          multiSelectable: false,
 	          fixedFooter: true,
-	          height: '250px'
+	          height: this.props.tableHeight
 	        },
 	        _react2.default.createElement(
 	          _Table.TableHeader,
@@ -75819,8 +75831,7 @@
 	  }]);
 
 	  return ItemTable;
-	}(_react2.default.Component);
-
+	}(_react2.default.Component)) || _class);
 	exports.default = ItemTable;
 
 /***/ }),
@@ -111154,10 +111165,11 @@
 
 	var _Auth2 = _interopRequireDefault(_Auth);
 
+	var _settingsActions = __webpack_require__(1039);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	//  Export functions
-	//  Import libraries
 	function fetchItems(id) {
 	  return function (dispatch) {
 	    dispatch({ type: 'FETCH_ITEMS_START' });
@@ -111174,11 +111186,12 @@
 
 	    (0, _axios2.default)(authReq).then(function (res) {
 	      dispatch({ type: 'FETCH_ITEMS_FULFILLED', payload: res.data });
+	      dispatch((0, _settingsActions.calculateTable)(res.data.length));
 	    }).catch(function (err) {
 	      dispatch({ type: 'FETCH_ITEMS_ERROR', payload: err });
 	    });
 	  };
-	}
+	} //  Import libraries
 	function createItem(itemData) {
 	  return function (dispatch) {
 	    dispatch({ type: 'UPDATE_ITEM_START' });
@@ -111311,6 +111324,54 @@
 	};
 
 	exports.default = PageNotfound;
+
+/***/ }),
+/* 1039 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.updateRow = updateRow;
+	exports.updateSecretData = updateSecretData;
+	exports.updateModalAddItem = updateModalAddItem;
+	exports.updateModalSellItem = updateModalSellItem;
+	exports.calculateTable = calculateTable;
+	//Export functions
+	function updateRow(row) {
+	  return { type: 'UPDATE_ROW', payload: row };
+	}
+
+	function updateSecretData(data) {
+	  return { type: 'UPDATE_SECRETDATA', payload: data };
+	}
+
+	function updateModalAddItem() {
+	  return { type: 'UPDATE_MODAL_ADDITEM' };
+	}
+
+	function updateModalSellItem() {
+	  return { type: 'UPDATE_MODAL_SELLITEM' };
+	}
+
+	function calculateTable(tableLength) {
+	  console.log('-----------');
+	  console.log(tableLength);
+	  var tableHeight = 0;
+	  if (tableLength <= 1) {
+	    return { type: 'UPDATE_TABLEHEIGHT', payload: '100px' };
+	  } else if (tableLength === 2) {
+	    return { type: 'UPDATE_TABLEHEIGHT', payload: '150px' };
+	  } else if (tableLength === 3) {
+	    return { type: 'UPDATE_TABLEHEIGHT', payload: '200px' };
+	  } else if (tableLength === 4) {
+	    return { type: 'UPDATE_TABLEHEIGHT', payload: '250px' };
+	  } else {
+	    return { type: 'UPDATE_TABLEHEIGHT', payload: '300px' };
+	  }
+	}
 
 /***/ })
 /******/ ]);

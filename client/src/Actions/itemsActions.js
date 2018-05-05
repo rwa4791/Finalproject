@@ -21,6 +21,7 @@ export function fetchItems(id){
     axios(authReq)
       .then((res) => {
         dispatch({type: 'FETCH_ITEMS_FULFILLED', payload: res.data})
+        dispatch(chartItemsAvailable(res.data));
         dispatch(calculateTable(res.data.length))
       })
       .catch((err) =>{
@@ -136,5 +137,21 @@ export function onChangeItem(event, item) {
     const field = event.target.name;
     item[field] = event.target.value;
     dispatch({type: 'UPDATE_ITEM', payload: item})
+  }
+}
+//Display available items
+export function chartItemsAvailable(itemArray){
+  return function(dispatch){
+    const result = itemArray.filter(item => item.quantity > 0);
+    dispatch({type: 'UPDATE_DATA', payload: result})
+  }
+}
+
+export function chartDataYear(itemArray){
+  return function(dispatch){
+    const result = itemArray.filter( (item) => {
+      item.sold.length > 6;
+    });
+
   }
 }

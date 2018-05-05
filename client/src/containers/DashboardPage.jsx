@@ -280,7 +280,7 @@ export default class DashboardPage extends React.Component {
                 <i className="material-icons small">settings</i>
             </IconButton>
           </h2>
-          <ChartsCard itemArray={this.props.itemArray} />
+          <ChartsCard />
         </Card>
         <Card className='container'>
 

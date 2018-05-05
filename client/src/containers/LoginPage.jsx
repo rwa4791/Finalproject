@@ -60,7 +60,6 @@ export default class LoginPage extends React.Component {
     // Send a POST request
 
     this.props.dispatch(fetchUser(formData))
-
   }
 
   /**

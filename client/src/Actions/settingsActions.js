@@ -16,8 +16,7 @@ export function updateModalSellItem(){
 }
 
 export function calculateTable (tableLength){
-  console.log('-----------');
-  console.log(tableLength);
+
   let tableHeight = 0;
   if (tableLength <= 1){
     return { type: 'UPDATE_TABLEHEIGHT', payload: '100px' }

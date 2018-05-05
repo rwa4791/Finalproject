@@ -7,6 +7,7 @@ export default function reducer( state = {
   deletingItem: false,
   fetched: false,
   itemArray: [],
+  data: [],
   errors: {},
   item: {
   }
@@ -18,6 +19,9 @@ export default function reducer( state = {
     //Update Items array
     case 'UPDATE_ITEM' : {
       return{ ...state, item: action.payload}
+    }
+    case 'UPDATE_DATA' : {
+      return{ ...state, data: action.payload}
     }
     case 'FETCH_ITEMS_FULFILLED' : {
       return {

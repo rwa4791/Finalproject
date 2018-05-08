@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 @connect((store)=>{
   return{
     auth: store.settings.authenticated,
+    location: store.router.location.pathname,
   }
 })
 export default class Navbar extends React.Component{

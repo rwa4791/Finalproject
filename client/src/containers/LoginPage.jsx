@@ -16,6 +16,7 @@ import { push } from 'react-router-redux';
     errors: store.users.errors,
     user: store.users.user,
     login: store.users.login,
+    location: store.router.location.pathname,
   }
 })
 export default class LoginPage extends React.Component {
@@ -57,9 +58,16 @@ export default class LoginPage extends React.Component {
       type:"UPDATE_LOGIN",
       payload: {}
     })
-    // Send a POST request
 
-    this.props.dispatch(fetchUser(formData))
+    //Create new item
+    Promise.resolve(this.props.dispatch(fetchUser(formData)))
+      .then( () =>{
+        //Then change location to dashboard
+        this.props.dispatch(push('/dashboard'));
+      }).catch( (err) =>{
+        //Warring any errors
+        console.log('WARRING!!!', err);
+      })
   }
 
   /**

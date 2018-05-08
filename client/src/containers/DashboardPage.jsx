@@ -34,6 +34,7 @@ const buttonStyle = {
 //Connect to redux store
 @connect((store) => {
   return{
+    location: store.router.location.pathname,
     _id: store.users._id,
     itemArray: store.items.itemArray,
     errors: store.items.errors,

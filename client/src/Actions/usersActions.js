@@ -21,7 +21,8 @@ export function fetchUser(formData){
         dispatch({type: 'FETCH_USER_FULFILLED', payload: res.data.user})
         //forward to dashboard
         dispatch(push('/dashboard'))
-        window.location.reload(true);
+        // window.location.reload(true);
+
       })
       //Catch error
       .catch((err) =>{

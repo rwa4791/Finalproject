@@ -42,6 +42,13 @@ export default class Navbar extends React.Component{
                     this.props.dispatch(push('/'));
                   }}
                   />
+                  <FlatButton
+                    label="Dashboard"
+                    style={flatButtonStyle}
+                    onClick={()=>{
+                      this.props.dispatch(push('/dashboard'));
+                    }}
+                    />
               </div>
             </div>
           ):(

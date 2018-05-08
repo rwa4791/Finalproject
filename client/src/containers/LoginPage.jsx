@@ -59,14 +59,11 @@ export default class LoginPage extends React.Component {
       payload: {}
     })
 
-    //Create new item
+    //Get user data
     Promise.resolve(this.props.dispatch(fetchUser(formData)))
       .then( () =>{
-        //Then change location to dashboard
-        this.props.dispatch(push('/dashboard'));
-      }).catch( (err) =>{
-        //Warring any errors
-        console.log('WARRING!!!', err);
+        //forward to dashboard
+        this.props.dispatch(push('/dashboard'))
       })
   }
 
@@ -81,7 +78,7 @@ export default class LoginPage extends React.Component {
   }
   componentDidMount() {
     if(Auth.getToken()!== null){
-      this.props.dispatch(push('/dashboard'))
+      this.props.dispatch(push('/'))
     }
   }
   /**

@@ -218,7 +218,7 @@ export default class DashboardPage extends React.Component {
         })
     }else{
       alert('Please log in!');
-      this.props.dispatch(push('/'));
+      this.props.dispatch(push('/dashboard'));
     }
   };
   //  Handle sell button function
